@@ -1,0 +1,1008 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flujos Billetera SUBE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--paper:#f5f5f5;--paper2:#ececec;--ink:#2d3142;--muted:#4f5d75;--soft:#7a8399;
+--rule:rgba(45,49,66,.12);--rule2:#bfc0c0;--accent:#0F4153;--accent-t:rgba(15,65,83,.07);--card:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Geist,system-ui,sans-serif;font-size:15px;line-height:1.55}
+code{font-family:'Geist Mono',monospace;font-size:.82em;background:rgba(45,49,66,.06);padding:1px 5px;border-radius:3px}
+a{color:var(--accent)}
+.layout{display:grid;grid-template-columns:264px minmax(0,1fr);max-width:1600px;margin:0 auto}
+nav.side{position:sticky;top:env(safe-area-inset-top,0px);height:calc(100vh - env(safe-area-inset-top,0px));overflow:auto;padding:32px 20px 32px 24px;border-right:1px solid var(--rule)}
+nav.side .brand{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin:0 0 4px}
+nav.side .brand-t{font-family:'Instrument Serif',serif;font-size:24px;line-height:1.1;margin:0 0 24px;color:var(--accent)}
+nav.side ul{list-style:none;padding:0;margin:0}
+nav.side li.g{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:20px 0 6px}
+nav.side li a{display:block;padding:5px 10px;margin-left:-10px;border-radius:4px;color:var(--ink);text-decoration:none;font-size:13.5px;border-left:2px solid transparent}
+nav.side li a:hover{background:var(--accent-t)}
+nav.side li a.active{border-left-color:var(--accent);background:var(--accent-t);color:var(--accent);font-weight:500}
+nav.side .extra{margin-top:24px;padding-top:16px;border-top:1px solid var(--rule)}
+main{padding:48px 40px 96px;min-width:0}
+.hero .eyebrow,.flow .eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin:0}
+.hero h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.05;margin:8px 0 16px;max-width:22ch}
+.hero h1 em{color:var(--accent)}
+.hero p.lead{max-width:68ch;color:var(--muted);font-size:16px;margin:0 0 32px}
+.cards{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 32px}
+.card{flex:1 1 240px;background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:20px 20px 16px}
+.card .num{font-family:'Instrument Serif',serif;font-size:32px;color:var(--accent);margin:0;line-height:1}
+.card h3{margin:8px 0 2px;font-size:16px}
+.card>p{margin:0 0 12px;color:var(--muted);font-size:13.5px}
+.card ul{list-style:none;padding:0;margin:0;border-top:1px solid var(--rule)}
+.card li a{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink);font-size:14px}
+.card li a:hover{color:var(--accent)}
+.card li span{font-family:'Geist Mono',monospace;font-size:10px;color:var(--soft);min-width:78px;white-space:nowrap;letter-spacing:.06em;text-transform:uppercase}
+.legend{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 8px}
+.legend b{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);font-weight:500;margin-right:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 8px;border:1px solid var(--c);background:var(--t);border-radius:4px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:2px;background:var(--c)}
+.chip small{font-family:'Geist Mono',monospace;font-weight:400;font-size:10px;color:var(--soft)}
+.flow{margin-top:72px;padding-top:40px;border-top:1px solid var(--rule)}
+.flow h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:2.2rem;line-height:1.1;margin:6px 0 2px}
+.flow .sub{margin:0 0 16px;color:var(--muted);font-family:'Geist Mono',monospace;font-size:12px}
+.flow .summary{max-width:78ch;margin:0 0 20px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden;margin:0 0 24px}
+.meta>div{background:var(--card);padding:10px 14px}
+.meta .wide{grid-column:1/-1}
+.meta dt{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.meta dd{margin:2px 0 0;font-size:14px}
+.meta dd.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+figure.diagram{margin:0 0 24px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:8px}
+figure .scroll{overflow-x:auto}
+figure svg{display:block;width:100%;height:auto}
+figure svg g.lbl{transition:opacity .15s}
+figure.dim svg g.lbl{opacity:.25}
+figure.dim svg g.lbl.on{opacity:1}
+figcaption{font-family:'Geist Mono',monospace;font-size:10px;color:var(--soft);padding:6px 4px 0;letter-spacing:.04em}
+details{margin:0 0 20px}
+details summary{cursor:pointer;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:6px 0}
+.table-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--rule2)}
+td{padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.steps tbody tr[data-step]:hover{background:var(--accent-t)}
+td.n{font-family:'Geist Mono',monospace;font-weight:600;width:36px}
+td.n::before{content:attr(data-x)}
+td.n.h{color:var(--accent)}
+td.route{white-space:nowrap;font-weight:500}
+td.route small{display:block;font-family:'Geist Mono',monospace;font-weight:400;font-size:10px;color:var(--soft);text-transform:uppercase;letter-spacing:.1em}
+td.code{font-family:'Geist Mono',monospace;font-size:11.5px;color:var(--muted);min-width:260px}
+tr.frag td{font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted);background:var(--paper);padding:5px 12px}
+.notes{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:6px;padding:14px 18px;margin:0 0 16px}
+.notes h3{margin:0 0 6px;font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:19px}
+.notes ul{margin:0;padding-left:18px}
+.notes li{margin:4px 0}
+a.next{display:inline-block;font-size:14px;text-decoration:none;padding:8px 14px;border:1px solid var(--accent);border-radius:4px}
+a.next:hover{background:var(--accent);color:#fff}
+#eventos table td:first-child{white-space:nowrap}
+footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--rule);font-family:'Geist Mono',monospace;font-size:11px;color:var(--soft)}
+@media (max-width:1000px){
+ .layout{display:block}
+ nav.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule);padding:20px 16px}
+ nav.side ul{display:none}
+ main{padding:28px 16px 64px}
+ .meta{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="side" aria-label="Casos de uso">
+  <p class="brand">NSSA · Billetera SUBE</p>
+  <p class="brand-t">Flujos de punta a punta</p>
+  <ul><li class="g">01 · Transferencias salientes</li><li><a href="#cashout-ok">Caso 1 · A — Transferencia a banco externo</a></li><li><a href="#cashout-timeout">Caso 1 · B — Transferencia: Coelsa no avisa a tiempo</a></li><li class="g">02 · Ingresos</li><li><a href="#cashin">Caso 2 — Ingreso de dinero desde banco externo</a></li><li class="g">03 · QR de viaje</li><li><a href="#qr-generar">Caso 3 · A — Generar QR de viaje</a></li><li><a href="#qr-viaje">Caso 3 · B — Cobro del viaje con QR</a></li><li><a href="#qr-deuda">Caso 3 · C — Pago de deuda de viajes</a></li><li class="g">04 · Alta de cuenta y tarjeta</li><li><a href="#alta-cuenta">Caso 4 · A — Alta de cuenta</a></li><li><a href="#alta-post">Caso 4 · B — Después del alta: alias y fee model</a></li><li><a href="#tarjeta">Caso 5 — Creación de tarjeta VISA SUBE</a></li>
+    <li class="g">Referencia</li>
+    <li><a href="#eventos">Mapa de eventos Pub/Sub</a></li>
+  </ul>
+</nav>
+<main>
+<header class="hero" id="inicio">
+  <p class="eyebrow">Diagramas de secuencia · relevados del código</p>
+  <h1>Cómo se mueve el dinero en la <em>billetera SUBE</em></h1>
+  <p class="lead">Nueve diagramas que recorren los casos de uso principales entre los microservicios de la billetera
+  (cash, wallet, worker, card y hook) y los sistemas externos: Pismo, BNA/Coelsa, VQR y AFIP.
+  Cada caso tiene el diagrama, la tabla paso a paso con la clase que lo implementa y los casos borde.</p>
+  <div class="cards"><article class="card" style="flex-grow:1.15"><p class="num">01</p><h3>Transferencias salientes</h3><p>Cash-out a otros bancos vía Coelsa</p><ul><li><a href="#cashout-ok"><span>Caso 1 · A</span>Transferencia a banco externo</a></li><li><a href="#cashout-timeout"><span>Caso 1 · B</span>Transferencia: Coelsa no avisa a tiempo</a></li></ul></article><article class="card" style="flex-grow:0.85"><p class="num">02</p><h3>Ingresos</h3><p>Dinero que llega desde otro banco</p><ul><li><a href="#cashin"><span>Caso 2</span>Ingreso de dinero desde banco externo</a></li></ul></article><article class="card" style="flex-grow:1"><p class="num">03</p><h3>QR de viaje</h3><p>Generar QR, cobrar el viaje y saldar deuda</p><ul><li><a href="#qr-generar"><span>Caso 3 · A</span>Generar QR de viaje</a></li><li><a href="#qr-viaje"><span>Caso 3 · B</span>Cobro del viaje con QR</a></li><li><a href="#qr-deuda"><span>Caso 3 · C</span>Pago de deuda de viajes</a></li></ul></article><article class="card" style="flex-grow:1.1"><p class="num">04</p><h3>Alta de cuenta y tarjeta</h3><p>De USER_CREATED a la VISA SUBE activa</p><ul><li><a href="#alta-cuenta"><span>Caso 4 · A</span>Alta de cuenta</a></li><li><a href="#alta-post"><span>Caso 4 · B</span>Después del alta: alias y fee model</a></li><li><a href="#tarjeta"><span>Caso 5</span>Creación de tarjeta VISA SUBE</a></li></ul></article></div>
+  <div class="legend"><b>Entidades</b><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>SUBE · NSSA<small>#0F4153</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>PISMO<small>#FFA945</small></span><span class="chip" style="--c:#B23A48;--t:rgba(178,58,72,0.07)"><i></i>BNA · COELSA<small>#B23A48</small></span><span class="chip" style="--c:#7A8399;--t:rgba(122,131,153,0.10)"><i></i>PUB/SUB<small>#7A8399</small></span><span class="chip" style="--c:#2D3142;--t:#ffffff"><i></i>USUARIO<small>#2D3142</small></span><span class="chip" style="--c:#0097C4;--t:rgba(0,151,196,0.08)"><i></i>VQR<small>#0097C4</small></span><span class="chip" style="--c:#8A6D3B;--t:rgba(138,109,59,0.08)"><i></i>AFIP<small>#8A6D3B</small></span></div>
+</header>
+
+<section class="flow" id="cashout-ok">
+  <p class="eyebrow">Caso 1 · A</p>
+  <h2>Transferencia a banco externo</h2>
+  <p class="sub">Cash-out vía Coelsa — camino principal</p>
+  <p class="summary">El usuario transfiere desde su CVU SUBE a un CBU/CVU de otra entidad. Cash Service pre-autoriza el débito en Pismo, ordena el cash-out en Coelsa y espera el <em>Aviso de Operación Finalizada</em> que llega por Hook Service → Pub/Sub → Redis. Según el código del aviso confirma o cancela la pre-autorización.</p>
+  <dl class="meta">
+    <div><dt>Disparador</dt><dd><code>App · POST /cash/v1/transfer</code></dd></div>
+    <div><dt>Resultado</dt><dd>Transacción OK o VALIDATION_ERROR + evento TRANSACTION_CREATED</dd></div>
+    <div class="wide"><dt>Participantes</dt><dd class="chips"><span class="chip" style="--c:#2D3142;--t:#ffffff"><i></i>App Mi SUBE<small>mobile</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Cash Service<small>ms-cash-service</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>Pismo<small>procesador · PCI</small></span><span class="chip" style="--c:#B23A48;--t:rgba(178,58,72,0.07)"><i></i>BNA / Coelsa<small>DEBIN · CVU · alias</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Hook Service<small>ms-hook-service</small></span></dd></div>
+  </dl>
+  <figure class="diagram"><div class="scroll"><svg class="seq" viewBox="0 0 1160 956" style="min-width:928px" role="img" aria-labelledby="cashout-ok-title cashout-ok-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="cashout-ok-title">Transferencia a banco externo</title>
+<desc id="cashout-ok-desc">Cash-out vía Coelsa — camino principal</desc>
+<defs>
+<marker id="cashout-ok-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="cashout-ok-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker>
+<marker id="cashout-ok-open" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polyline points="0 0, 8 3, 0 6" fill="none" stroke="#7a8399" stroke-width="1.2"/></marker>
+</defs>
+<rect x="0" y="0" width="1160" height="956" fill="#f5f5f5"/>
+<rect x="60" y="568" width="576" height="300" rx="4" fill="none" stroke="rgba(45,49,66,0.28)" stroke-width="1"/>
+<rect x="60" y="568" width="40" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.22)" stroke-width="1"/>
+<text x="80" y="580" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">ALT</text>
+<line x1="68" y1="724" x2="628" y2="724" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="108" y="582" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[resultado.codigo = 00]</text>
+<text x="72" y="742" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[aviso con error]</text>
+<line x1="116" y1="88" x2="116" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="348" y1="88" x2="348" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="580" y1="88" x2="580" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="812" y1="88" x2="812" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="1044" y1="88" x2="1044" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="116" y1="158" x2="343" y2="158" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-ok-arrow)"/>
+<path d="M348,190 H368 Q376,190 376,198 V206 Q376,214 368,214 H353" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-ok-arrow)"/>
+<line x1="348" y1="270" x2="575" y2="270" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-ok-arrow)"/>
+<line x1="580" y1="326" x2="353" y2="326" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-ok-arrow)"/>
+<line x1="348" y1="382" x2="807" y2="382" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-ok-arrow)"/>
+<line x1="812" y1="438" x2="353" y2="438" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-ok-arrow)"/>
+<line x1="812" y1="494" x2="1039" y2="494" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-ok-open)"/>
+<line x1="1044" y1="550" x2="353" y2="550" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-ok-open)"/>
+<line x1="348" y1="646" x2="575" y2="646" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-ok-arrow)"/>
+<line x1="348" y1="702" x2="121" y2="702" stroke="#0F4153" stroke-width="1.8" marker-end="url(#cashout-ok-accent)"/>
+<line x1="348" y1="790" x2="575" y2="790" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-ok-arrow)"/>
+<line x1="348" y1="846" x2="121" y2="846" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-ok-arrow)"/>
+<g class="lbl" data-step="1"><rect x="154.8" y="124" width="154.4" height="30" rx="2" fill="#f5f5f5"/><rect x="160.8" y="127" width="14" height="12" rx="2" fill="#2d3142"/><text x="167.8" y="136" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text><text x="180.8" y="136" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">TRANSFERIR A CBU/CVU</text><text x="160.8" y="149" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /cash/v1/transfer</text></g>
+<g class="lbl" data-step="2"><rect x="382.0" y="192" width="159.6" height="30" rx="2" fill="#f5f5f5"/><rect x="388.0" y="195" width="14" height="12" rx="2" fill="#2d3142"/><text x="395.0" y="204" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text><text x="408.0" y="204" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESOLVER Y VALIDAR</text><text x="388.0" y="217" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">wallet-svc · Coelsa · límite</text></g>
+<g class="lbl" data-step="3"><rect x="371.0" y="236" width="185.9" height="30" rx="2" fill="#f5f5f5"/><rect x="377.0" y="239" width="14" height="12" rx="2" fill="#2d3142"/><text x="384.0" y="248" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text><text x="397.0" y="248" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">PRE-AUTORIZAR DÉBITO</text><text x="377.0" y="261" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /payment-methods/v2/payments</text></g>
+<g class="lbl" data-step="4"><rect x="402.1" y="292" width="123.8" height="30" rx="2" fill="#f5f5f5"/><rect x="408.1" y="295" width="14" height="12" rx="2" fill="#2d3142"/><text x="415.1" y="304" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text><text x="428.1" y="304" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPONSECODE 00</text><text x="408.1" y="317" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">x-cid</text></g>
+<g class="lbl" data-step="5"><rect x="386.9" y="348" width="154.3" height="30" rx="2" fill="#f5f5f5"/><rect x="392.9" y="351" width="14" height="12" rx="2" fill="#2d3142"/><text x="399.9" y="360" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text><text x="412.9" y="360" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CREAR CASH-OUT</text><text x="392.9" y="373" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /apiDebinV1/QR/CashOut</text></g>
+<g class="lbl" data-step="6"><rect x="624.9" y="404" width="142.2" height="30" rx="2" fill="#f5f5f5"/><rect x="630.9" y="407" width="14" height="12" rx="2" fill="#2d3142"/><text x="637.9" y="416" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text><text x="650.9" y="416" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">7500 · 7541 · 0602</text><text x="630.9" y="429" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">id DEBIN</text></g>
+<g class="lbl" data-step="7"><rect x="824.5" y="460" width="207.0" height="30" rx="2" fill="#f5f5f5"/><rect x="830.5" y="463" width="14" height="12" rx="2" fill="#2d3142"/><text x="837.5" y="472" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">7</text><text x="850.5" y="472" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">AVISO OP. FINALIZADA</text><text x="830.5" y="485" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /coelsa/AvisoOperacionFinalizada</text></g>
+<g class="lbl" data-step="8"><rect x="850.9" y="516" width="154.3" height="30" rx="2" fill="#f5f5f5"/><rect x="856.9" y="519" width="14" height="12" rx="2" fill="#2d3142"/><text x="863.9" y="528" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">8</text><text x="876.9" y="528" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">AVISO VÍA PUB/SUB</text><text x="856.9" y="541" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">HOOK_SERVICE_AVISOS → Redis</text></g>
+<g class="lbl" data-step="9"><rect x="350.0" y="612" width="228.1" height="30" rx="2" fill="#f5f5f5"/><rect x="356.0" y="615" width="14" height="12" rx="2" fill="#2d3142"/><text x="363.0" y="624" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">9</text><text x="376.0" y="624" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONFIRMAR PAGO</text><text x="356.0" y="637" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /payment-methods/v2/payments/confirm</text></g>
+<g class="lbl" data-step="10"><rect x="170.1" y="668" width="123.8" height="30" rx="2" fill="#f5f5f5"/><rect x="176.1" y="671" width="14" height="12" rx="2" fill="#0F4153"/><text x="183.1" y="680" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">10</text><text x="196.1" y="680" fill="#0F4153" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">200 · STATUS OK</text><text x="176.1" y="693" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">trackingId</text></g>
+<g class="lbl" data-step="11"><rect x="352.6" y="756" width="222.8" height="30" rx="2" fill="#f5f5f5"/><rect x="358.6" y="759" width="14" height="12" rx="2" fill="#2d3142"/><text x="365.6" y="768" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">11</text><text x="378.6" y="768" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CANCELAR PAGO</text><text x="358.6" y="781" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /payment-methods/v2/payments/cancel</text></g>
+<g class="lbl" data-step="12"><rect x="148.7" y="812" width="166.6" height="18" rx="2" fill="#f5f5f5"/><rect x="154.7" y="815" width="14" height="12" rx="2" fill="#2d3142"/><text x="161.7" y="824" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">12</text><text x="174.7" y="824" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">200 · VALIDATION_ERROR</text></g>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.5"/>
+<rect x="34" y="34" width="48" height="14" rx="2" fill="#2D3142"/>
+<text x="40" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">USUARIO</text>
+<text x="34" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">App Mi SUBE</text>
+<text x="34" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">mobile</text>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="266" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="272" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="266" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Cash Service</text>
+<text x="266" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-cash-service</text>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="rgba(255,169,69,0.12)" stroke="#FFA945" stroke-width="1.5"/>
+<rect x="498" y="34" width="38" height="14" rx="2" fill="#FFA945"/>
+<text x="504" y="44" fill="#111111" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PISMO</text>
+<text x="498" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pismo</text>
+<text x="498" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">procesador · PCI</text>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="rgba(178,58,72,0.07)" stroke="#B23A48" stroke-width="1.5"/>
+<rect x="730" y="34" width="74" height="14" rx="2" fill="#B23A48"/>
+<text x="736" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">BNA · COELSA</text>
+<text x="730" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">BNA / Coelsa</text>
+<text x="730" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">DEBIN · CVU · alias</text>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="962" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="968" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="962" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Hook Service</text>
+<text x="962" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-hook-service</text>
+<rect x="88" y="888" width="56" height="4" rx="2" fill="#2D3142"/>
+<rect x="320" y="888" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="552" y="888" width="56" height="4" rx="2" fill="#FFA945"/>
+<rect x="784" y="888" width="56" height="4" rx="2" fill="#B23A48"/>
+<rect x="1016" y="888" width="56" height="4" rx="2" fill="#0F4153"/>
+<line x1="24" y1="904" x2="1136" y2="904" stroke="rgba(45,49,66,0.12)"/>
+<line x1="24" y1="924" x2="58" y2="924" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-ok-arrow)"/>
+<text x="68" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">LLAMADA SÍNCRONA</text>
+<line x1="187" y1="924" x2="221" y2="924" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-ok-arrow)"/>
+<text x="231" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPUESTA</text>
+<line x1="306" y1="924" x2="340" y2="924" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-ok-open)"/>
+<text x="350" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EVENTO ASÍNCRONO</text>
+<line x1="469" y1="924" x2="503" y2="924" stroke="#0F4153" stroke-width="1.8" marker-end="url(#cashout-ok-accent)"/>
+<text x="513" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESULTADO PRINCIPAL</text>
+</svg></div>
+    <figcaption>Pasá el mouse sobre un paso de la tabla para resaltarlo en el diagrama.</figcaption></figure>
+  <details open><summary>Paso a paso</summary><div class="table-wrap"><table class="steps"><thead><tr><th>#</th><th>Origen → destino</th><th>Mensaje</th><th>Dónde en el código</th></tr></thead><tbody><tr data-step="1"><td class="n">1</td><td class="route">App Mi SUBE → Cash Service<small>llamada</small></td><td>Transferir a CBU/CVU <code>POST /cash/v1/transfer</code></td><td class="code">CashController.createTransferTransaction → TransferBusinessService.transferTransaction</td></tr><tr data-step="2"><td class="n">2</td><td class="route">Cash Service<small>interno</small></td><td>Resolver y validar <code>wallet-svc · Coelsa · límite</code></td><td class="code">WalletService.findWalletByUserId / findWalletByCvu; si no es SUBE → CoelsaService.getCoelsaAccountBy (alias/apiAliasV1/Consultar); LimitEngine.check(CASH_OUT_EXTERNAL)</td></tr><tr data-step="3"><td class="n">3</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Pre-autorizar débito <code>POST /payment-methods/v2/payments</code></td><td class="code">ExternalTransferStrategy.execute → PismoService.pismoCashOut</td></tr><tr data-step="4"><td class="n">4</td><td class="route">Pismo → Cash Service<small>respuesta</small></td><td>responseCode 00 <code>x-cid</code></td><td class="code">Si responseCode ≠ 00 se guarda VALIDATION_ERROR y se lanza PismoValidationException</td></tr><tr data-step="5"><td class="n">5</td><td class="route">Cash Service → BNA / Coelsa<small>llamada</small></td><td>Crear cash-out <code>POST /apiDebinV1/QR/CashOut</code></td><td class="code">CoelsaService.createCashout</td></tr><tr data-step="6"><td class="n">6</td><td class="route">BNA / Coelsa → Cash Service<small>respuesta</small></td><td>7500 · 7541 · 0602 <code>id DEBIN</code></td><td class="code">Otro código → PismoService.pismoCancel y VALIDATION_ERROR</td></tr><tr data-step="7"><td class="n">7</td><td class="route">BNA / Coelsa → Hook Service<small>evento</small></td><td>Aviso op. finalizada <code>POST /coelsa/AvisoOperacionFinalizada</code></td><td class="code">HookController → CoelsaBusinessService.publishAvisoOperacionFinalizada</td></tr><tr data-step="8"><td class="n">8</td><td class="route">Hook Service → Cash Service<small>evento</small></td><td>Aviso vía Pub/Sub <code>HOOK_SERVICE_AVISOS → Redis</code></td><td class="code">AvisosHookServiceHandler → CashOutBusinessService.cashOutNewsRecived guarda en Redis; el request original hace polling a Redis cada 100 ms hasta app.transferTimeout</td></tr><tr class="frag"><td colspan="4">ALT [resultado.codigo = 00]</td></tr><tr data-step="9"><td class="n">9</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Confirmar pago <code>POST /payment-methods/v2/payments/confirm</code></td><td class="code">PismoService.pismoConfirm</td></tr><tr data-step="10"><td class="n h">10</td><td class="route">Cash Service → App Mi SUBE<small>resultado</small></td><td>200 · status OK <code>trackingId</code></td><td class="code">finalizeSuccessfulTransaction: guarda destinatario, actualiza límite, push origen/destino; publishTransaction emite TRANSACTION_CREATED</td></tr><tr class="frag"><td colspan="4">ELSE [aviso con error]</td></tr><tr data-step="11"><td class="n">11</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Cancelar pago <code>POST /payment-methods/v2/payments/cancel</code></td><td class="code">PismoService.pismoCancel</td></tr><tr data-step="12"><td class="n">12</td><td class="route">Cash Service → App Mi SUBE<small>respuesta</small></td><td>200 · VALIDATION_ERROR</td><td class="code">finalizeUnSuccessfulTransaction guarda la transacción</td></tr></tbody></table></div></details>
+  <div class="notes"><h3>Notas y casos borde</h3><ul><li>Si el aviso no llega dentro de <code>app.transferTimeout</code> se sigue el flujo <a href='#cashout-timeout'>1 · B</a>.</li><li>La transferencia a otra billetera SUBE (CVU propio) usa <code>CloseLoopTransferStrategy</code>: transferencia interna en Pismo, sin Coelsa.</li><li>Cualquier excepción no controlada durante la espera cancela en Pismo y responde error <code>E010</code>.</li></ul></div>
+  <a class="next" href="#cashout-timeout">Continúa en <b>Caso 1 · B — Transferencia: Coelsa no avisa a tiempo</b> →</a>
+</section>
+<section class="flow" id="cashout-timeout">
+  <p class="eyebrow">Caso 1 · B</p>
+  <h2>Transferencia: Coelsa no avisa a tiempo</h2>
+  <p class="sub">Consulta de DEBIN y reintento asíncrono por PENDING_TRANSFER</p>
+  <p class="summary">Continúa al paso 8 del caso 1 · A cuando vence la espera del aviso. Cash Service consulta el DEBIN directamente: si ya está ACREDITADO confirma en Pismo; si no, deja la transacción en PENDING y publica <code>PENDING_TRANSFER</code>, que se reprocesa hasta acreditar o cancelar.</p>
+  <dl class="meta">
+    <div><dt>Disparador</dt><dd><code>Timeout esperando el aviso (app.transferTimeout)</code></dd></div>
+    <div><dt>Resultado</dt><dd>OK, PENDING → OK, o cancelación en Pismo a los 60 s</dd></div>
+    <div class="wide"><dt>Participantes</dt><dd class="chips"><span class="chip" style="--c:#2D3142;--t:#ffffff"><i></i>App Mi SUBE<small>mobile</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Cash Service<small>ms-cash-service</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>Pismo<small>procesador · PCI</small></span><span class="chip" style="--c:#B23A48;--t:rgba(178,58,72,0.07)"><i></i>BNA / Coelsa<small>DEBIN · CVU · alias</small></span><span class="chip" style="--c:#7A8399;--t:rgba(122,131,153,0.10)"><i></i>Pub/Sub<small>GCP</small></span></dd></div>
+  </dl>
+  <figure class="diagram"><div class="scroll"><svg class="seq" viewBox="0 0 1160 900" style="min-width:928px" role="img" aria-labelledby="cashout-timeout-title cashout-timeout-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="cashout-timeout-title">Transferencia: Coelsa no avisa a tiempo</title>
+<desc id="cashout-timeout-desc">Consulta de DEBIN y reintento asíncrono por PENDING_TRANSFER</desc>
+<defs>
+<marker id="cashout-timeout-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="cashout-timeout-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker>
+<marker id="cashout-timeout-open" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polyline points="0 0, 8 3, 0 6" fill="none" stroke="#7a8399" stroke-width="1.2"/></marker>
+</defs>
+<rect x="0" y="0" width="1160" height="900" fill="#f5f5f5"/>
+<rect x="60" y="288" width="1040" height="300" rx="4" fill="none" stroke="rgba(45,49,66,0.28)" stroke-width="1"/>
+<rect x="60" y="288" width="40" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.22)" stroke-width="1"/>
+<text x="80" y="300" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">ALT</text>
+<line x1="68" y1="444" x2="1092" y2="444" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="108" y="302" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[estado = ACREDITADO]</text>
+<text x="72" y="462" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[otro estado o error de consulta]</text>
+<line x1="116" y1="88" x2="116" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="348" y1="88" x2="348" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="580" y1="88" x2="580" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="812" y1="88" x2="812" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="1044" y1="88" x2="1044" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<path d="M348,134 H368 Q376,134 376,142 V150 Q376,158 368,158 H353" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-timeout-arrow)"/>
+<line x1="348" y1="214" x2="807" y2="214" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-timeout-arrow)"/>
+<line x1="812" y1="270" x2="353" y2="270" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-timeout-arrow)"/>
+<line x1="348" y1="366" x2="575" y2="366" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-timeout-arrow)"/>
+<line x1="348" y1="422" x2="121" y2="422" stroke="#0F4153" stroke-width="1.8" marker-end="url(#cashout-timeout-accent)"/>
+<line x1="348" y1="510" x2="1039" y2="510" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-timeout-open)"/>
+<line x1="348" y1="566" x2="121" y2="566" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-timeout-arrow)"/>
+<line x1="1044" y1="642" x2="353" y2="642" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-timeout-open)"/>
+<line x1="348" y1="698" x2="807" y2="698" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-timeout-arrow)"/>
+<line x1="812" y1="754" x2="353" y2="754" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-timeout-arrow)"/>
+<line x1="348" y1="810" x2="575" y2="810" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-timeout-arrow)"/>
+<g class="lbl" data-step="1"><rect x="382.0" y="136" width="154.3" height="30" rx="2" fill="#f5f5f5"/><rect x="388.0" y="139" width="14" height="12" rx="2" fill="#2d3142"/><text x="395.0" y="148" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text><text x="408.0" y="148" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">TIMEOUT SIN AVISO</text><text x="388.0" y="161" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">future.get(transferTimeout)</text></g>
+<g class="lbl" data-step="2"><rect x="386.9" y="180" width="154.3" height="30" rx="2" fill="#f5f5f5"/><rect x="392.9" y="183" width="14" height="12" rx="2" fill="#2d3142"/><text x="399.9" y="192" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text><text x="412.9" y="192" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONSULTAR DEBIN</text><text x="392.9" y="205" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">GET /Debin/Debin2/{debinId}</text></g>
+<g class="lbl" data-step="3"><rect x="629.4" y="236" width="133.2" height="30" rx="2" fill="#f5f5f5"/><rect x="635.4" y="239" width="14" height="12" rx="2" fill="#2d3142"/><text x="642.4" y="248" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text><text x="655.4" y="248" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ESTADO DEL DEBIN</text><text x="635.4" y="261" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">operacion.estado.codigo</text></g>
+<g class="lbl" data-step="4"><rect x="405.2" y="332" width="117.7" height="30" rx="2" fill="#f5f5f5"/><rect x="411.2" y="335" width="14" height="12" rx="2" fill="#2d3142"/><text x="418.2" y="344" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text><text x="431.2" y="344" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONFIRMAR PAGO</text><text x="411.2" y="357" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">…/payments/confirm</text></g>
+<g class="lbl" data-step="5"><rect x="170.1" y="388" width="123.8" height="18" rx="2" fill="#f5f5f5"/><rect x="176.1" y="391" width="14" height="12" rx="2" fill="#0F4153"/><text x="183.1" y="400" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text><text x="196.1" y="400" fill="#0F4153" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">200 · STATUS OK</text></g>
+<g class="lbl" data-step="6"><rect x="399.0" y="476" width="129.9" height="30" rx="2" fill="#f5f5f5"/><rect x="405.0" y="479" width="14" height="12" rx="2" fill="#2d3142"/><text x="412.0" y="488" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text><text x="425.0" y="488" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">PENDING_TRANSFER</text><text x="405.0" y="501" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">debinId · timestamp</text></g>
+<g class="lbl" data-step="7"><rect x="154.8" y="532" width="154.4" height="18" rx="2" fill="#f5f5f5"/><rect x="160.8" y="535" width="14" height="12" rx="2" fill="#2d3142"/><text x="167.8" y="544" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">7</text><text x="180.8" y="544" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">200 · STATUS PENDING</text></g>
+<g class="lbl" data-step="8"><rect x="850.8" y="608" width="154.4" height="30" rx="2" fill="#f5f5f5"/><rect x="856.8" y="611" width="14" height="12" rx="2" fill="#2d3142"/><text x="863.8" y="620" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">8</text><text x="876.8" y="620" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">REENTREGA DEL EVENTO</text><text x="856.8" y="633" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">handleDelayedTransaction</text></g>
+<g class="lbl" data-step="9"><rect x="386.9" y="664" width="154.3" height="30" rx="2" fill="#f5f5f5"/><rect x="392.9" y="667" width="14" height="12" rx="2" fill="#2d3142"/><text x="399.9" y="676" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">9</text><text x="412.9" y="676" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONSULTAR DEBIN</text><text x="392.9" y="689" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">GET /Debin/Debin2/{debinId}</text></g>
+<g class="lbl" data-step="10"><rect x="649.4" y="720" width="93.2" height="18" rx="2" fill="#f5f5f5"/><rect x="655.4" y="723" width="14" height="12" rx="2" fill="#2d3142"/><text x="662.4" y="732" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">10</text><text x="675.4" y="732" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ACREDITADO</text></g>
+<g class="lbl" data-step="11"><rect x="405.2" y="776" width="117.7" height="30" rx="2" fill="#f5f5f5"/><rect x="411.2" y="779" width="14" height="12" rx="2" fill="#2d3142"/><text x="418.2" y="788" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">11</text><text x="431.2" y="788" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONFIRMAR PAGO</text><text x="411.2" y="801" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">…/payments/confirm</text></g>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.5"/>
+<rect x="34" y="34" width="48" height="14" rx="2" fill="#2D3142"/>
+<text x="40" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">USUARIO</text>
+<text x="34" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">App Mi SUBE</text>
+<text x="34" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">mobile</text>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="266" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="272" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="266" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Cash Service</text>
+<text x="266" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-cash-service</text>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="rgba(255,169,69,0.12)" stroke="#FFA945" stroke-width="1.5"/>
+<rect x="498" y="34" width="38" height="14" rx="2" fill="#FFA945"/>
+<text x="504" y="44" fill="#111111" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PISMO</text>
+<text x="498" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pismo</text>
+<text x="498" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">procesador · PCI</text>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="rgba(178,58,72,0.07)" stroke="#B23A48" stroke-width="1.5"/>
+<rect x="730" y="34" width="74" height="14" rx="2" fill="#B23A48"/>
+<text x="736" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">BNA · COELSA</text>
+<text x="730" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">BNA / Coelsa</text>
+<text x="730" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">DEBIN · CVU · alias</text>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="rgba(122,131,153,0.10)" stroke="#7A8399" stroke-width="1.5" stroke-dasharray="5,4"/>
+<rect x="962" y="34" width="48" height="14" rx="2" fill="#7A8399"/>
+<text x="968" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PUB/SUB</text>
+<text x="962" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pub/Sub</text>
+<text x="962" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">GCP</text>
+<rect x="88" y="832" width="56" height="4" rx="2" fill="#2D3142"/>
+<rect x="320" y="832" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="552" y="832" width="56" height="4" rx="2" fill="#FFA945"/>
+<rect x="784" y="832" width="56" height="4" rx="2" fill="#B23A48"/>
+<rect x="1016" y="832" width="56" height="4" rx="2" fill="#7A8399"/>
+<line x1="24" y1="848" x2="1136" y2="848" stroke="rgba(45,49,66,0.12)"/>
+<line x1="24" y1="868" x2="58" y2="868" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashout-timeout-arrow)"/>
+<text x="68" y="871" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">LLAMADA SÍNCRONA</text>
+<line x1="187" y1="868" x2="221" y2="868" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-timeout-arrow)"/>
+<text x="231" y="871" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPUESTA</text>
+<line x1="306" y1="868" x2="340" y2="868" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashout-timeout-open)"/>
+<text x="350" y="871" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EVENTO ASÍNCRONO</text>
+<line x1="469" y1="868" x2="503" y2="868" stroke="#0F4153" stroke-width="1.8" marker-end="url(#cashout-timeout-accent)"/>
+<text x="513" y="871" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESULTADO PRINCIPAL</text>
+</svg></div>
+    <figcaption>Pasá el mouse sobre un paso de la tabla para resaltarlo en el diagrama.</figcaption></figure>
+  <details open><summary>Paso a paso</summary><div class="table-wrap"><table class="steps"><thead><tr><th>#</th><th>Origen → destino</th><th>Mensaje</th><th>Dónde en el código</th></tr></thead><tbody><tr data-step="1"><td class="n">1</td><td class="route">Cash Service<small>interno</small></td><td>Timeout sin aviso <code>future.get(transferTimeout)</code></td><td class="code">ExternalTransferStrategy.execute · catch TimeoutException</td></tr><tr data-step="2"><td class="n">2</td><td class="route">Cash Service → BNA / Coelsa<small>llamada</small></td><td>Consultar DEBIN <code>GET /Debin/Debin2/{debinId}</code></td><td class="code">CoelsaService.checkDebin</td></tr><tr data-step="3"><td class="n">3</td><td class="route">BNA / Coelsa → Cash Service<small>respuesta</small></td><td>Estado del DEBIN <code>operacion.estado.codigo</code></td><td class="code"></td></tr><tr class="frag"><td colspan="4">ALT [estado = ACREDITADO]</td></tr><tr data-step="4"><td class="n">4</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Confirmar pago <code>…/payments/confirm</code></td><td class="code">PismoService.pismoConfirm</td></tr><tr data-step="5"><td class="n h">5</td><td class="route">Cash Service → App Mi SUBE<small>resultado</small></td><td>200 · status OK</td><td class="code">TransactionStatus.OK</td></tr><tr class="frag"><td colspan="4">ELSE [otro estado o error de consulta]</td></tr><tr data-step="6"><td class="n">6</td><td class="route">Cash Service → Pub/Sub<small>evento</small></td><td>PENDING_TRANSFER <code>debinId · timestamp</code></td><td class="code">eventDispatcher.publish(PendingTransferEvent)</td></tr><tr data-step="7"><td class="n">7</td><td class="route">Cash Service → App Mi SUBE<small>respuesta</small></td><td>200 · status PENDING</td><td class="code">TransactionStatus.PENDING</td></tr><tr data-step="8"><td class="n">8</td><td class="route">Pub/Sub → Cash Service<small>evento</small></td><td>Reentrega del evento <code>handleDelayedTransaction</code></td><td class="code">TransferBusinessService.handleDelayedTransaction</td></tr><tr data-step="9"><td class="n">9</td><td class="route">Cash Service → BNA / Coelsa<small>llamada</small></td><td>Consultar DEBIN <code>GET /Debin/Debin2/{debinId}</code></td><td class="code">CoelsaService.checkDebin</td></tr><tr data-step="10"><td class="n">10</td><td class="route">BNA / Coelsa → Cash Service<small>respuesta</small></td><td>ACREDITADO</td><td class="code">Otro estado → EventException (nack, se reintenta)</td></tr><tr data-step="11"><td class="n">11</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Confirmar pago <code>…/payments/confirm</code></td><td class="code">pismoConfirm + finalizeSuccessfulTransaction (status OK)</td></tr></tbody></table></div></details>
+  <div class="notes"><h3>Notas y casos borde</h3><ul><li>Si pasaron más de 60 s desde <code>timestamp</code> y la transacción sigue PENDING, el reintento ejecuta <code>pismoCancel</code> en lugar de confirmar.</li><li>Si el DEBIN no está ACREDITADO, el handler lanza <code>EventException</code>: Pub/Sub reentrega el mensaje.</li><li>Si la transacción ya no está PENDING se descarta con <code>EventFinalException</code> (ack).</li></ul></div>
+  
+</section>
+<section class="flow" id="cashin">
+  <p class="eyebrow">Caso 2</p>
+  <h2>Ingreso de dinero desde banco externo</h2>
+  <p class="sub">Cash-in: Aviso CVU de Coelsa → crédito en Pismo</p>
+  <p class="summary">Un tercero transfiere al CVU SUBE del usuario. Coelsa avisa a Hook Service, que publica el aviso en Pub/Sub. Cash Service valida idempotencia y titularidad, fuerza el crédito en la cuenta Pismo, registra la transacción y notifica al usuario.</p>
+  <dl class="meta">
+    <div><dt>Disparador</dt><dd><code>Coelsa · POST /coelsa/AvisoCVU</code></dd></div>
+    <div><dt>Resultado</dt><dd>Transacción CREDIT IMPACTED (o ASYNC_FINISHED) + push</dd></div>
+    <div class="wide"><dt>Participantes</dt><dd class="chips"><span class="chip" style="--c:#B23A48;--t:rgba(178,58,72,0.07)"><i></i>BNA / Coelsa<small>DEBIN · CVU · alias</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Hook Service<small>ms-hook-service</small></span><span class="chip" style="--c:#7A8399;--t:rgba(122,131,153,0.10)"><i></i>Pub/Sub<small>GCP</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Cash Service<small>ms-cash-service</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>Pismo<small>procesador · PCI</small></span></dd></div>
+  </dl>
+  <figure class="diagram"><div class="scroll"><svg class="seq" viewBox="0 0 1160 752" style="min-width:928px" role="img" aria-labelledby="cashin-title cashin-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="cashin-title">Ingreso de dinero desde banco externo</title>
+<desc id="cashin-desc">Cash-in: Aviso CVU de Coelsa → crédito en Pismo</desc>
+<defs>
+<marker id="cashin-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="cashin-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker>
+<marker id="cashin-open" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polyline points="0 0, 8 3, 0 6" fill="none" stroke="#7a8399" stroke-width="1.2"/></marker>
+</defs>
+<rect x="0" y="0" width="1160" height="752" fill="#f5f5f5"/>
+<line x1="116" y1="88" x2="116" y2="684" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="348" y1="88" x2="348" y2="684" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="580" y1="88" x2="580" y2="684" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="812" y1="88" x2="812" y2="684" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="1044" y1="88" x2="1044" y2="684" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="116" y1="158" x2="343" y2="158" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashin-arrow)"/>
+<line x1="348" y1="214" x2="575" y2="214" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashin-open)"/>
+<line x1="348" y1="270" x2="121" y2="270" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashin-arrow)"/>
+<line x1="580" y1="326" x2="807" y2="326" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashin-open)"/>
+<path d="M812,358 H832 Q840,358 840,366 V374 Q840,382 832,382 H817" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashin-arrow)"/>
+<line x1="812" y1="438" x2="1039" y2="438" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashin-arrow)"/>
+<line x1="1044" y1="494" x2="817" y2="494" stroke="#0F4153" stroke-width="1.8" marker-end="url(#cashin-accent)"/>
+<path d="M812,526 H832 Q840,526 840,534 V542 Q840,550 832,550 H817" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashin-arrow)"/>
+<line x1="812" y1="606" x2="585" y2="606" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashin-open)"/>
+<line x1="812" y1="662" x2="585" y2="662" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashin-open)"/>
+<g class="lbl" data-step="1"><rect x="167.0" y="124" width="129.9" height="30" rx="2" fill="#f5f5f5"/><rect x="173.0" y="127" width="14" height="12" rx="2" fill="#2d3142"/><text x="180.0" y="136" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text><text x="193.0" y="136" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">AVISO DE CRÉDITO</text><text x="173.0" y="149" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /coelsa/AvisoCVU</text></g>
+<g class="lbl" data-step="2"><rect x="389.9" y="180" width="148.3" height="30" rx="2" fill="#f5f5f5"/><rect x="395.9" y="183" width="14" height="12" rx="2" fill="#2d3142"/><text x="402.9" y="192" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text><text x="415.9" y="192" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">HOOK_SERVICE_AVISOS</text><text x="395.9" y="205" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">operationType=AvisoCVU</text></g>
+<g class="lbl" data-step="3"><rect x="197.6" y="236" width="68.7" height="18" rx="2" fill="#f5f5f5"/><rect x="203.6" y="239" width="14" height="12" rx="2" fill="#2d3142"/><text x="210.6" y="248" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text><text x="223.6" y="248" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">200 OK</text></g>
+<g class="lbl" data-step="4"><rect x="626.8" y="292" width="138.5" height="30" rx="2" fill="#f5f5f5"/><rect x="632.8" y="295" width="14" height="12" rx="2" fill="#2d3142"/><text x="639.8" y="304" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text><text x="652.8" y="304" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ENTREGA DEL AVISO</text><text x="632.8" y="317" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">AvisosHookServiceHandler</text></g>
+<g class="lbl" data-step="5"><rect x="846.0" y="360" width="154.3" height="30" rx="2" fill="#f5f5f5"/><rect x="852.0" y="363" width="14" height="12" rx="2" fill="#2d3142"/><text x="859.0" y="372" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text><text x="872.0" y="372" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">VALIDAR CRÉDITO</text><text x="852.0" y="385" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">dedup coelsaId · CVU · CUIT</text></g>
+<g class="lbl" data-step="6"><rect x="837.7" y="404" width="180.6" height="30" rx="2" fill="#f5f5f5"/><rect x="843.7" y="407" width="14" height="12" rx="2" fill="#2d3142"/><text x="850.7" y="416" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text><text x="863.7" y="416" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">FORZAR CRÉDITO</text><text x="843.7" y="429" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /payments/v1/payments/force</text></g>
+<g class="lbl" data-step="7"><rect x="860.0" y="460" width="136.0" height="30" rx="2" fill="#f5f5f5"/><rect x="866.0" y="463" width="14" height="12" rx="2" fill="#0F4153"/><text x="873.0" y="472" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">7</text><text x="886.0" y="472" fill="#0F4153" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CRÉDITO IMPACTADO</text><text x="866.0" y="485" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">EP2P0010 = asíncrono</text></g>
+<g class="lbl" data-step="8"><rect x="846.0" y="528" width="160.5" height="30" rx="2" fill="#f5f5f5"/><rect x="852.0" y="531" width="14" height="12" rx="2" fill="#2d3142"/><text x="859.0" y="540" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">8</text><text x="872.0" y="540" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">REGISTRAR TRANSACCIÓN</text><text x="852.0" y="553" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">tipo CREDIT</text></g>
+<g class="lbl" data-step="9"><rect x="621.9" y="572" width="148.3" height="18" rx="2" fill="#f5f5f5"/><rect x="627.9" y="575" width="14" height="12" rx="2" fill="#2d3142"/><text x="634.9" y="584" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">9</text><text x="647.9" y="584" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">TRANSACTION_CREATED</text></g>
+<g class="lbl" data-step="10"><rect x="626.8" y="628" width="138.5" height="30" rx="2" fill="#f5f5f5"/><rect x="632.8" y="631" width="14" height="12" rx="2" fill="#2d3142"/><text x="639.8" y="640" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">10</text><text x="652.8" y="640" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">PUSH AL USUARIO</text><text x="632.8" y="653" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">TRX_NOTIFICATION_MESSAGE</text></g>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="rgba(178,58,72,0.07)" stroke="#B23A48" stroke-width="1.5"/>
+<rect x="34" y="34" width="74" height="14" rx="2" fill="#B23A48"/>
+<text x="40" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">BNA · COELSA</text>
+<text x="34" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">BNA / Coelsa</text>
+<text x="34" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">DEBIN · CVU · alias</text>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="266" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="272" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="266" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Hook Service</text>
+<text x="266" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-hook-service</text>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="rgba(122,131,153,0.10)" stroke="#7A8399" stroke-width="1.5" stroke-dasharray="5,4"/>
+<rect x="498" y="34" width="48" height="14" rx="2" fill="#7A8399"/>
+<text x="504" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PUB/SUB</text>
+<text x="498" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pub/Sub</text>
+<text x="498" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">GCP</text>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="730" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="736" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="730" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Cash Service</text>
+<text x="730" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-cash-service</text>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="rgba(255,169,69,0.12)" stroke="#FFA945" stroke-width="1.5"/>
+<rect x="962" y="34" width="38" height="14" rx="2" fill="#FFA945"/>
+<text x="968" y="44" fill="#111111" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PISMO</text>
+<text x="962" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pismo</text>
+<text x="962" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">procesador · PCI</text>
+<rect x="88" y="684" width="56" height="4" rx="2" fill="#B23A48"/>
+<rect x="320" y="684" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="552" y="684" width="56" height="4" rx="2" fill="#7A8399"/>
+<rect x="784" y="684" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="1016" y="684" width="56" height="4" rx="2" fill="#FFA945"/>
+<line x1="24" y1="700" x2="1136" y2="700" stroke="rgba(45,49,66,0.12)"/>
+<line x1="24" y1="720" x2="58" y2="720" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#cashin-arrow)"/>
+<text x="68" y="723" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">LLAMADA SÍNCRONA</text>
+<line x1="187" y1="720" x2="221" y2="720" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashin-arrow)"/>
+<text x="231" y="723" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPUESTA</text>
+<line x1="306" y1="720" x2="340" y2="720" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#cashin-open)"/>
+<text x="350" y="723" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EVENTO ASÍNCRONO</text>
+<line x1="469" y1="720" x2="503" y2="720" stroke="#0F4153" stroke-width="1.8" marker-end="url(#cashin-accent)"/>
+<text x="513" y="723" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESULTADO PRINCIPAL</text>
+</svg></div>
+    <figcaption>Pasá el mouse sobre un paso de la tabla para resaltarlo en el diagrama.</figcaption></figure>
+  <details open><summary>Paso a paso</summary><div class="table-wrap"><table class="steps"><thead><tr><th>#</th><th>Origen → destino</th><th>Mensaje</th><th>Dónde en el código</th></tr></thead><tbody><tr data-step="1"><td class="n">1</td><td class="route">BNA / Coelsa → Hook Service<small>llamada</small></td><td>Aviso de crédito <code>POST /coelsa/AvisoCVU</code></td><td class="code">HookController → CoelsaBusinessService.publishAvisoCVU</td></tr><tr data-step="2"><td class="n">2</td><td class="route">Hook Service → Pub/Sub<small>evento</small></td><td>HOOK_SERVICE_AVISOS <code>operationType=AvisoCVU</code></td><td class="code">PubSubEventDispatcher.publish(AvisosHookServiceEvent)</td></tr><tr data-step="3"><td class="n">3</td><td class="route">Hook Service → BNA / Coelsa<small>respuesta</small></td><td>200 OK</td><td class="code"></td></tr><tr data-step="4"><td class="n">4</td><td class="route">Pub/Sub → Cash Service<small>evento</small></td><td>Entrega del aviso <code>AvisosHookServiceHandler</code></td><td class="code">AvisosHookServiceHandler → CashInBusinessService.creditReceived</td></tr><tr data-step="5"><td class="n">5</td><td class="route">Cash Service<small>interno</small></td><td>Validar crédito <code>dedup coelsaId · CVU · CUIT</code></td><td class="code">transactionService.existsByIdCoelsaId; WalletService.findWalletByCvu; cuit del aviso = cuit de la cuenta</td></tr><tr data-step="6"><td class="n">6</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Forzar crédito <code>POST /payments/v1/payments/force</code></td><td class="code">PismoService.forcePayment · processingCode CREDIT_TRANSFER</td></tr><tr data-step="7"><td class="n h">7</td><td class="route">Pismo → Cash Service<small>resultado</small></td><td>Crédito impactado <code>EP2P0010 = asíncrono</code></td><td class="code">IMPACTED; si code = EP2P0010 queda ASYNC_FINISHED</td></tr><tr data-step="8"><td class="n">8</td><td class="route">Cash Service<small>interno</small></td><td>Registrar transacción <code>tipo CREDIT</code></td><td class="code">saveTxInExection</td></tr><tr data-step="9"><td class="n">9</td><td class="route">Cash Service → Pub/Sub<small>evento</small></td><td>TRANSACTION_CREATED</td><td class="code">TransactionCreatedEvent</td></tr><tr data-step="10"><td class="n">10</td><td class="route">Cash Service → Pub/Sub<small>evento</small></td><td>Push al usuario <code>TRX_NOTIFICATION_MESSAGE</code></td><td class="code">NotificationService.sendNotificationTopic · “Transferencia recibida”</td></tr></tbody></table></div></details>
+  <div class="notes"><h3>Notas y casos borde</h3><ul><li>Aviso duplicado (mismo id de Coelsa), CVU inexistente o CUIT que no coincide → <code>EventFinalException</code>: se hace ack y no se reintenta.</li><li>Error de Pismo (<code>PismoClientException</code>) → se guarda la transacción en estado ERROR.</li><li>Errores no identificados → <code>EventException</code>: Pub/Sub reentrega el aviso.</li></ul></div>
+  
+</section>
+<section class="flow" id="qr-generar">
+  <p class="eyebrow">Caso 3 · A</p>
+  <h2>Generar QR de viaje</h2>
+  <p class="sub">Validación de saldo y deuda antes de emitir el QR</p>
+  <p class="summary">La app pide un QR para viajar. Cash Service obtiene la billetera, valida saldo en Pismo y consulta a VQR si el usuario tiene deuda de transporte o está en denylist. Si está habilitado, VQR genera el QR (con bypass si hubo un pago reciente).</p>
+  <dl class="meta">
+    <div><dt>Disparador</dt><dd><code>App · POST /v1/qr/generate</code></dd></div>
+    <div><dt>Resultado</dt><dd>QR en base64 (TTL 90 s) o rechazo</dd></div>
+    <div class="wide"><dt>Participantes</dt><dd class="chips"><span class="chip" style="--c:#2D3142;--t:#ffffff"><i></i>App Mi SUBE<small>mobile</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Cash Service<small>ms-cash-service</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Wallet Service<small>ms-wallet-service</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>Pismo<small>procesador · PCI</small></span><span class="chip" style="--c:#0097C4;--t:rgba(0,151,196,0.08)"><i></i>VQR<small>QR de viaje</small></span></dd></div>
+  </dl>
+  <figure class="diagram"><div class="scroll"><svg class="seq" viewBox="0 0 1160 900" style="min-width:928px" role="img" aria-labelledby="qr-generar-title qr-generar-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="qr-generar-title">Generar QR de viaje</title>
+<desc id="qr-generar-desc">Validación de saldo y deuda antes de emitir el QR</desc>
+<defs>
+<marker id="qr-generar-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="qr-generar-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker>
+<marker id="qr-generar-open" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polyline points="0 0, 8 3, 0 6" fill="none" stroke="#7a8399" stroke-width="1.2"/></marker>
+</defs>
+<rect x="0" y="0" width="1160" height="900" fill="#f5f5f5"/>
+<rect x="60" y="512" width="1040" height="300" rx="4" fill="none" stroke="rgba(45,49,66,0.28)" stroke-width="1"/>
+<rect x="60" y="512" width="40" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.22)" stroke-width="1"/>
+<text x="80" y="524" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">ALT</text>
+<line x1="68" y1="724" x2="1092" y2="724" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="108" y="526" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[sin deuda, o pagó hace &lt; 2 h]</text>
+<text x="72" y="742" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[con deuda o en denylist]</text>
+<line x1="116" y1="88" x2="116" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="348" y1="88" x2="348" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="580" y1="88" x2="580" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="812" y1="88" x2="812" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="1044" y1="88" x2="1044" y2="832" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="116" y1="158" x2="343" y2="158" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-generar-arrow)"/>
+<line x1="348" y1="214" x2="575" y2="214" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-generar-arrow)"/>
+<line x1="580" y1="270" x2="353" y2="270" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-generar-arrow)"/>
+<line x1="348" y1="326" x2="807" y2="326" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-generar-arrow)"/>
+<line x1="812" y1="382" x2="353" y2="382" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-generar-arrow)"/>
+<line x1="348" y1="438" x2="1039" y2="438" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-generar-arrow)"/>
+<line x1="1044" y1="494" x2="353" y2="494" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-generar-arrow)"/>
+<line x1="348" y1="590" x2="1039" y2="590" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-generar-arrow)"/>
+<line x1="1044" y1="646" x2="353" y2="646" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-generar-arrow)"/>
+<line x1="348" y1="702" x2="121" y2="702" stroke="#0F4153" stroke-width="1.8" marker-end="url(#qr-generar-accent)"/>
+<line x1="348" y1="790" x2="121" y2="790" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-generar-arrow)"/>
+<g class="lbl" data-step="1"><rect x="157.9" y="124" width="148.3" height="30" rx="2" fill="#f5f5f5"/><rect x="163.9" y="127" width="14" height="12" rx="2" fill="#2d3142"/><text x="170.9" y="136" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text><text x="183.9" y="136" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">GENERAR QR DE VIAJE</text><text x="163.9" y="149" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /v1/qr/generate</text></g>
+<g class="lbl" data-step="2"><rect x="399.0" y="180" width="129.9" height="30" rx="2" fill="#f5f5f5"/><rect x="405.0" y="183" width="14" height="12" rx="2" fill="#2d3142"/><text x="412.0" y="192" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text><text x="425.0" y="192" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">BUSCAR BILLETERA</text><text x="405.0" y="205" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">GET wallet por userId</text></g>
+<g class="lbl" data-step="3"><rect x="389.5" y="236" width="149.0" height="30" rx="2" fill="#f5f5f5"/><rect x="395.5" y="239" width="14" height="12" rx="2" fill="#2d3142"/><text x="402.5" y="248" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text><text x="415.5" y="248" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">WALLET + CUENTA</text><text x="395.5" y="261" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">processorAccount.accountId</text></g>
+<g class="lbl" data-step="4"><rect x="392.1" y="292" width="143.8" height="30" rx="2" fill="#f5f5f5"/><rect x="398.1" y="295" width="14" height="12" rx="2" fill="#2d3142"/><text x="405.1" y="304" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text><text x="418.1" y="304" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONSULTAR SALDO</text><text x="398.1" y="317" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">GET /accounts/v1/…/limits</text></g>
+<g class="lbl" data-step="5"><rect x="631.0" y="348" width="129.9" height="18" rx="2" fill="#f5f5f5"/><rect x="637.0" y="351" width="14" height="12" rx="2" fill="#2d3142"/><text x="644.0" y="360" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text><text x="657.0" y="360" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">SALDO DISPONIBLE</text></g>
+<g class="lbl" data-step="6"><rect x="373.7" y="404" width="180.6" height="30" rx="2" fill="#f5f5f5"/><rect x="379.7" y="407" width="14" height="12" rx="2" fill="#2d3142"/><text x="386.7" y="416" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text><text x="399.7" y="416" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONSULTAR DEUDA</text><text x="379.7" y="429" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">GET /debt/{wallet}/accounts/{id}</text></g>
+<g class="lbl" data-step="7"><rect x="863.0" y="460" width="129.9" height="18" rx="2" fill="#f5f5f5"/><rect x="869.0" y="463" width="14" height="12" rx="2" fill="#2d3142"/><text x="876.0" y="472" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">7</text><text x="889.0" y="472" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">DEUDA + DENYLIST</text></g>
+<g class="lbl" data-step="8"><rect x="386.9" y="556" width="154.3" height="30" rx="2" fill="#f5f5f5"/><rect x="392.9" y="559" width="14" height="12" rx="2" fill="#2d3142"/><text x="399.9" y="568" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">8</text><text x="412.9" y="568" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">GENERAR QR</text><text x="392.9" y="581" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /v1/trip/qr/{walletId}</text></g>
+<g class="lbl" data-step="9"><rect x="887.5" y="612" width="81.0" height="18" rx="2" fill="#f5f5f5"/><rect x="893.5" y="615" width="14" height="12" rx="2" fill="#2d3142"/><text x="900.5" y="624" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">9</text><text x="913.5" y="624" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">QRBASE64</text></g>
+<g class="lbl" data-step="10"><rect x="182.3" y="668" width="99.3" height="30" rx="2" fill="#f5f5f5"/><rect x="188.3" y="671" width="14" height="12" rx="2" fill="#0F4153"/><text x="195.3" y="680" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">10</text><text x="208.3" y="680" fill="#0F4153" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">QR GENERADO</text><text x="188.3" y="693" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">TTL 90 s</text></g>
+<g class="lbl" data-step="11"><rect x="194.6" y="756" width="74.8" height="30" rx="2" fill="#f5f5f5"/><rect x="200.6" y="759" width="14" height="12" rx="2" fill="#2d3142"/><text x="207.6" y="768" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">11</text><text x="220.6" y="768" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RECHAZO</text><text x="200.6" y="781" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">DENY_LIST</text></g>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.5"/>
+<rect x="34" y="34" width="48" height="14" rx="2" fill="#2D3142"/>
+<text x="40" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">USUARIO</text>
+<text x="34" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">App Mi SUBE</text>
+<text x="34" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">mobile</text>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="266" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="272" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="266" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Cash Service</text>
+<text x="266" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-cash-service</text>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="498" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="504" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="498" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Wallet Service</text>
+<text x="498" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-wallet-service</text>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="rgba(255,169,69,0.12)" stroke="#FFA945" stroke-width="1.5"/>
+<rect x="730" y="34" width="38" height="14" rx="2" fill="#FFA945"/>
+<text x="736" y="44" fill="#111111" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PISMO</text>
+<text x="730" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pismo</text>
+<text x="730" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">procesador · PCI</text>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="rgba(0,151,196,0.08)" stroke="#0097C4" stroke-width="1.5"/>
+<rect x="962" y="34" width="27" height="14" rx="2" fill="#0097C4"/>
+<text x="968" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">VQR</text>
+<text x="962" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">VQR</text>
+<text x="962" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">QR de viaje</text>
+<rect x="88" y="832" width="56" height="4" rx="2" fill="#2D3142"/>
+<rect x="320" y="832" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="552" y="832" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="784" y="832" width="56" height="4" rx="2" fill="#FFA945"/>
+<rect x="1016" y="832" width="56" height="4" rx="2" fill="#0097C4"/>
+<line x1="24" y1="848" x2="1136" y2="848" stroke="rgba(45,49,66,0.12)"/>
+<line x1="24" y1="868" x2="58" y2="868" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-generar-arrow)"/>
+<text x="68" y="871" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">LLAMADA SÍNCRONA</text>
+<line x1="187" y1="868" x2="221" y2="868" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-generar-arrow)"/>
+<text x="231" y="871" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPUESTA</text>
+<line x1="306" y1="868" x2="340" y2="868" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-generar-open)"/>
+<text x="350" y="871" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EVENTO ASÍNCRONO</text>
+<line x1="469" y1="868" x2="503" y2="868" stroke="#0F4153" stroke-width="1.8" marker-end="url(#qr-generar-accent)"/>
+<text x="513" y="871" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESULTADO PRINCIPAL</text>
+</svg></div>
+    <figcaption>Pasá el mouse sobre un paso de la tabla para resaltarlo en el diagrama.</figcaption></figure>
+  <details open><summary>Paso a paso</summary><div class="table-wrap"><table class="steps"><thead><tr><th>#</th><th>Origen → destino</th><th>Mensaje</th><th>Dónde en el código</th></tr></thead><tbody><tr data-step="1"><td class="n">1</td><td class="route">App Mi SUBE → Cash Service<small>llamada</small></td><td>Generar QR de viaje <code>POST /v1/qr/generate</code></td><td class="code">QrController.createQr → QrBusinessService.generateQr</td></tr><tr data-step="2"><td class="n">2</td><td class="route">Cash Service → Wallet Service<small>llamada</small></td><td>Buscar billetera <code>GET wallet por userId</code></td><td class="code">WalletService.findWalletByUserId</td></tr><tr data-step="3"><td class="n">3</td><td class="route">Wallet Service → Cash Service<small>respuesta</small></td><td>Wallet + cuenta <code>processorAccount.accountId</code></td><td class="code"></td></tr><tr data-step="4"><td class="n">4</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Consultar saldo <code>GET /accounts/v1/…/limits</code></td><td class="code">PismoService.getPismoAccount · availableCreditLimit</td></tr><tr data-step="5"><td class="n">5</td><td class="route">Pismo → Cash Service<small>respuesta</small></td><td>Saldo disponible</td><td class="code">Saldo ≤ 0 → rechazo NO_BALANCE</td></tr><tr data-step="6"><td class="n">6</td><td class="route">Cash Service → VQR<small>llamada</small></td><td>Consultar deuda <code>GET /debt/{wallet}/accounts/{id}</code></td><td class="code">VqrService.getDebt</td></tr><tr data-step="7"><td class="n">7</td><td class="route">VQR → Cash Service<small>respuesta</small></td><td>Deuda + denylist</td><td class="code">transportDebtAmount · accountIsOnDenylist</td></tr><tr class="frag"><td colspan="4">ALT [sin deuda, o pagó hace &lt; 2 h]</td></tr><tr data-step="8"><td class="n">8</td><td class="route">Cash Service → VQR<small>llamada</small></td><td>Generar QR <code>POST /v1/trip/qr/{walletId}</code></td><td class="code">VqrService.generateQr · bypass &quot;2&quot; si hay pago reciente, &quot;0&quot; si no</td></tr><tr data-step="9"><td class="n">9</td><td class="route">VQR → Cash Service<small>respuesta</small></td><td>qrBase64</td><td class="code"></td></tr><tr data-step="10"><td class="n h">10</td><td class="route">Cash Service → App Mi SUBE<small>resultado</small></td><td>QR generado <code>TTL 90 s</code></td><td class="code">ResourceStatus.GENERATED</td></tr><tr class="frag"><td colspan="4">ELSE [con deuda o en denylist]</td></tr><tr data-step="11"><td class="n">11</td><td class="route">Cash Service → App Mi SUBE<small>respuesta</small></td><td>Rechazo <code>DENY_LIST</code></td><td class="code">buildRejectionResponse(DENY_LIST)</td></tr></tbody></table></div></details>
+  <div class="notes"><h3>Notas y casos borde</h3><ul><li>El TTL del QR se configura con <code>qr.ttl</code> (default 90 s).</li><li>El pago reciente se evalúa con <code>DebtService.hasRecentPayments</code>: permite viajar mientras VQR todavía no reflejó el pago de la deuda.</li></ul></div>
+  <a class="next" href="#qr-viaje">Continúa en <b>Caso 3 · B — Cobro del viaje con QR</b> →</a>
+</section>
+<section class="flow" id="qr-viaje">
+  <p class="eyebrow">Caso 3 · B</p>
+  <h2>Cobro del viaje con QR</h2>
+  <p class="sub">VQR informa el viaje y Cash Service lo debita</p>
+  <p class="summary">Cuando el validador lee el QR, VQR llama a Cash Service. Se valida que el viaje sea único, se consulta saldo y se transfiere la tarifa a la cuenta recaudadora de NSSA. Si el saldo no alcanza, se cobra lo disponible y el resto queda como deuda.</p>
+  <dl class="meta">
+    <div><dt>Disparador</dt><dd><code>VQR · POST /payment/rides</code></dd></div>
+    <div><dt>Resultado</dt><dd>APPROVED, o REJECTED + deuda registrada</dd></div>
+    <div class="wide"><dt>Participantes</dt><dd class="chips"><span class="chip" style="--c:#0097C4;--t:rgba(0,151,196,0.08)"><i></i>VQR<small>QR de viaje</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Cash Service<small>ms-cash-service</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Wallet Service<small>ms-wallet-service</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>Pismo<small>procesador · PCI</small></span></dd></div>
+  </dl>
+  <figure class="diagram"><div class="scroll"><svg class="seq" viewBox="0 0 928 956" style="min-width:742px" role="img" aria-labelledby="qr-viaje-title qr-viaje-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="qr-viaje-title">Cobro del viaje con QR</title>
+<desc id="qr-viaje-desc">VQR informa el viaje y Cash Service lo debita</desc>
+<defs>
+<marker id="qr-viaje-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="qr-viaje-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker>
+<marker id="qr-viaje-open" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polyline points="0 0, 8 3, 0 6" fill="none" stroke="#7a8399" stroke-width="1.2"/></marker>
+</defs>
+<rect x="0" y="0" width="928" height="956" fill="#f5f5f5"/>
+<rect x="60" y="456" width="808" height="412" rx="4" fill="none" stroke="rgba(45,49,66,0.28)" stroke-width="1"/>
+<rect x="60" y="456" width="40" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.22)" stroke-width="1"/>
+<text x="80" y="468" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">ALT</text>
+<line x1="68" y1="668" x2="860" y2="668" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="108" y="470" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[saldo ≥ tarifa]</text>
+<text x="72" y="686" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[saldo insuficiente]</text>
+<line x1="116" y1="88" x2="116" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="348" y1="88" x2="348" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="580" y1="88" x2="580" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="812" y1="88" x2="812" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="116" y1="158" x2="343" y2="158" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-viaje-arrow)"/>
+<line x1="348" y1="214" x2="575" y2="214" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-viaje-arrow)"/>
+<line x1="580" y1="270" x2="353" y2="270" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-viaje-arrow)"/>
+<path d="M348,302 H368 Q376,302 376,310 V318 Q376,326 368,326 H353" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-viaje-arrow)"/>
+<line x1="348" y1="382" x2="807" y2="382" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-viaje-arrow)"/>
+<line x1="812" y1="438" x2="353" y2="438" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-viaje-arrow)"/>
+<line x1="348" y1="534" x2="807" y2="534" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-viaje-arrow)"/>
+<line x1="812" y1="590" x2="353" y2="590" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-viaje-arrow)"/>
+<line x1="348" y1="646" x2="121" y2="646" stroke="#0F4153" stroke-width="1.8" marker-end="url(#qr-viaje-accent)"/>
+<path d="M348,710 H368 Q376,710 376,718 V726 Q376,734 368,734 H353" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-viaje-arrow)"/>
+<line x1="348" y1="790" x2="807" y2="790" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-viaje-arrow)"/>
+<line x1="348" y1="846" x2="121" y2="846" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-viaje-arrow)"/>
+<g class="lbl" data-step="1"><rect x="170.1" y="124" width="123.8" height="30" rx="2" fill="#f5f5f5"/><rect x="176.1" y="127" width="14" height="12" rx="2" fill="#2d3142"/><text x="183.1" y="136" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text><text x="196.1" y="136" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">VIAJE ESCANEADO</text><text x="176.1" y="149" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /payment/rides</text></g>
+<g class="lbl" data-step="2"><rect x="399.0" y="180" width="129.9" height="30" rx="2" fill="#f5f5f5"/><rect x="405.0" y="183" width="14" height="12" rx="2" fill="#2d3142"/><text x="412.0" y="192" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text><text x="425.0" y="192" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">BUSCAR BILLETERA</text><text x="405.0" y="205" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">GET wallet por id</text></g>
+<g class="lbl" data-step="3"><rect x="429.6" y="236" width="68.7" height="18" rx="2" fill="#f5f5f5"/><rect x="435.6" y="239" width="14" height="12" rx="2" fill="#2d3142"/><text x="442.6" y="248" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text><text x="455.6" y="248" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">WALLET</text></g>
+<g class="lbl" data-step="4"><rect x="382.0" y="304" width="148.3" height="30" rx="2" fill="#f5f5f5"/><rect x="388.0" y="307" width="14" height="12" rx="2" fill="#2d3142"/><text x="395.0" y="316" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text><text x="408.0" y="316" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">VALIDAR VIAJE ÚNICO</text><text x="388.0" y="329" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">acceptorId · TravelDetail</text></g>
+<g class="lbl" data-step="5"><rect x="392.1" y="348" width="143.8" height="30" rx="2" fill="#f5f5f5"/><rect x="398.1" y="351" width="14" height="12" rx="2" fill="#2d3142"/><text x="405.1" y="360" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text><text x="418.1" y="360" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONSULTAR SALDO</text><text x="398.1" y="373" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">GET /accounts/v1/…/limits</text></g>
+<g class="lbl" data-step="6"><rect x="631.0" y="404" width="129.9" height="18" rx="2" fill="#f5f5f5"/><rect x="637.0" y="407" width="14" height="12" rx="2" fill="#2d3142"/><text x="644.0" y="416" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text><text x="657.0" y="416" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">SALDO DISPONIBLE</text></g>
+<g class="lbl" data-step="7"><rect x="396.0" y="500" width="136.0" height="30" rx="2" fill="#f5f5f5"/><rect x="402.0" y="503" width="14" height="12" rx="2" fill="#2d3142"/><text x="409.0" y="512" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">7</text><text x="422.0" y="512" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">TRANSFERIR TARIFA</text><text x="402.0" y="525" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">usuario → cuenta NSSA</text></g>
+<g class="lbl" data-step="8"><rect x="634.1" y="556" width="123.8" height="18" rx="2" fill="#f5f5f5"/><rect x="640.1" y="559" width="14" height="12" rx="2" fill="#2d3142"/><text x="647.1" y="568" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">8</text><text x="660.1" y="568" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPONSECODE 00</text></g>
+<g class="lbl" data-step="9"><rect x="191.5" y="612" width="81.0" height="18" rx="2" fill="#f5f5f5"/><rect x="197.5" y="615" width="14" height="12" rx="2" fill="#0F4153"/><text x="204.5" y="624" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">9</text><text x="217.5" y="624" fill="#0F4153" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">APPROVED</text></g>
+<g class="lbl" data-step="10"><rect x="382.0" y="712" width="123.8" height="30" rx="2" fill="#f5f5f5"/><rect x="388.0" y="715" width="14" height="12" rx="2" fill="#2d3142"/><text x="395.0" y="724" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">10</text><text x="408.0" y="724" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">REGISTRAR DEUDA</text><text x="388.0" y="737" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">DebtDetail</text></g>
+<g class="lbl" data-step="11"><rect x="384.2" y="756" width="159.6" height="30" rx="2" fill="#f5f5f5"/><rect x="390.2" y="759" width="14" height="12" rx="2" fill="#2d3142"/><text x="397.2" y="768" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">11</text><text x="410.2" y="768" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">COBRAR SALDO PARCIAL</text><text x="390.2" y="781" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">DEBIT_CLOSE_LOOP_TRAVEL_DEBT</text></g>
+<g class="lbl" data-step="12"><rect x="191.5" y="812" width="81.0" height="18" rx="2" fill="#f5f5f5"/><rect x="197.5" y="815" width="14" height="12" rx="2" fill="#2d3142"/><text x="204.5" y="824" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">12</text><text x="217.5" y="824" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">REJECTED</text></g>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="rgba(0,151,196,0.08)" stroke="#0097C4" stroke-width="1.5"/>
+<rect x="34" y="34" width="27" height="14" rx="2" fill="#0097C4"/>
+<text x="40" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">VQR</text>
+<text x="34" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">VQR</text>
+<text x="34" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">QR de viaje</text>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="266" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="272" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="266" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Cash Service</text>
+<text x="266" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-cash-service</text>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="498" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="504" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="498" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Wallet Service</text>
+<text x="498" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-wallet-service</text>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="rgba(255,169,69,0.12)" stroke="#FFA945" stroke-width="1.5"/>
+<rect x="730" y="34" width="38" height="14" rx="2" fill="#FFA945"/>
+<text x="736" y="44" fill="#111111" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PISMO</text>
+<text x="730" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pismo</text>
+<text x="730" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">procesador · PCI</text>
+<rect x="88" y="888" width="56" height="4" rx="2" fill="#0097C4"/>
+<rect x="320" y="888" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="552" y="888" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="784" y="888" width="56" height="4" rx="2" fill="#FFA945"/>
+<line x1="24" y1="904" x2="904" y2="904" stroke="rgba(45,49,66,0.12)"/>
+<line x1="24" y1="924" x2="58" y2="924" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-viaje-arrow)"/>
+<text x="68" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">LLAMADA SÍNCRONA</text>
+<line x1="187" y1="924" x2="221" y2="924" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-viaje-arrow)"/>
+<text x="231" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPUESTA</text>
+<line x1="306" y1="924" x2="340" y2="924" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-viaje-open)"/>
+<text x="350" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EVENTO ASÍNCRONO</text>
+<line x1="469" y1="924" x2="503" y2="924" stroke="#0F4153" stroke-width="1.8" marker-end="url(#qr-viaje-accent)"/>
+<text x="513" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESULTADO PRINCIPAL</text>
+</svg></div>
+    <figcaption>Pasá el mouse sobre un paso de la tabla para resaltarlo en el diagrama.</figcaption></figure>
+  <details open><summary>Paso a paso</summary><div class="table-wrap"><table class="steps"><thead><tr><th>#</th><th>Origen → destino</th><th>Mensaje</th><th>Dónde en el código</th></tr></thead><tbody><tr data-step="1"><td class="n">1</td><td class="route">VQR → Cash Service<small>llamada</small></td><td>Viaje escaneado <code>POST /payment/rides</code></td><td class="code">QrController.paymentRide → RidesBusinessService.handleRideDebt</td></tr><tr data-step="2"><td class="n">2</td><td class="route">Cash Service → Wallet Service<small>llamada</small></td><td>Buscar billetera <code>GET wallet por id</code></td><td class="code">WalletService.findByWalletId</td></tr><tr data-step="3"><td class="n">3</td><td class="route">Wallet Service → Cash Service<small>respuesta</small></td><td>Wallet</td><td class="code"></td></tr><tr data-step="4"><td class="n">4</td><td class="route">Cash Service<small>interno</small></td><td>Validar viaje único <code>acceptorId · TravelDetail</code></td><td class="code">travelDetailService.findByAcceptorId; si existe → REJECTED; si no, createTravel</td></tr><tr data-step="5"><td class="n">5</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Consultar saldo <code>GET /accounts/v1/…/limits</code></td><td class="code">PismoService.getPismoAccount</td></tr><tr data-step="6"><td class="n">6</td><td class="route">Pismo → Cash Service<small>respuesta</small></td><td>Saldo disponible</td><td class="code"></td></tr><tr class="frag"><td colspan="4">ALT [saldo ≥ tarifa]</td></tr><tr data-step="7"><td class="n">7</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Transferir tarifa <code>usuario → cuenta NSSA</code></td><td class="code">TransactionBusinessService.handlePismoTransfer · DEBIT_CLOSE_LOOP_TRAVEL</td></tr><tr data-step="8"><td class="n">8</td><td class="route">Pismo → Cash Service<small>respuesta</small></td><td>responseCode 00</td><td class="code"></td></tr><tr data-step="9"><td class="n h">9</td><td class="route">Cash Service → VQR<small>resultado</small></td><td>APPROVED</td><td class="code">VqrHookDto.Result(APPROVED)</td></tr><tr class="frag"><td colspan="4">ELSE [saldo insuficiente]</td></tr><tr data-step="10"><td class="n">10</td><td class="route">Cash Service<small>interno</small></td><td>Registrar deuda <code>DebtDetail</code></td><td class="code">createDebt(travelDetail, wallet, amount)</td></tr><tr data-step="11"><td class="n">11</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Cobrar saldo parcial <code>DEBIT_CLOSE_LOOP_TRAVEL_DEBT</code></td><td class="code">Se transfiere el saldo disponible; currentDebtAmount -= saldo</td></tr><tr data-step="12"><td class="n">12</td><td class="route">Cash Service → VQR<small>respuesta</small></td><td>REJECTED</td><td class="code">VqrHookDto.Result(REJECTED)</td></tr></tbody></table></div></details>
+  <div class="notes"><h3>Notas y casos borde</h3><ul><li>Si VQR reinyecta un viaje que ya tiene deuda: deuda saldada → APPROVED; deuda activa → publica <code>SETTLE_DEBT</code> para intentar cobrarla y responde REJECTED.</li><li>Se notifica al usuario “¡Pagaste el transporte con éxito!” (<code>CASH_RIDE_COMPLETED</code>).</li></ul></div>
+  <a class="next" href="#qr-deuda">Continúa en <b>Caso 3 · C — Pago de deuda de viajes</b> →</a>
+</section>
+<section class="flow" id="qr-deuda">
+  <p class="eyebrow">Caso 3 · C</p>
+  <h2>Pago de deuda de viajes</h2>
+  <p class="sub">Reserva en Pismo, informe a VQR y confirmación</p>
+  <p class="summary">El usuario salda la deuda de transporte. Cash Service calcula el total, reserva el importe en Pismo (transferencia a la cuenta NSSA), informa el pago a VQR y, según la respuesta, confirma o cancela la reserva.</p>
+  <dl class="meta">
+    <div><dt>Disparador</dt><dd><code>App · POST /v1/qr/pay-intention (o evento SETTLE_DEBT)</code></dd></div>
+    <div><dt>Resultado</dt><dd>DEBT_PAID, o ERROR_RETRY con la reserva cancelada</dd></div>
+    <div class="wide"><dt>Participantes</dt><dd class="chips"><span class="chip" style="--c:#2D3142;--t:#ffffff"><i></i>App Mi SUBE<small>mobile</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Cash Service<small>ms-cash-service</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>Pismo<small>procesador · PCI</small></span><span class="chip" style="--c:#0097C4;--t:rgba(0,151,196,0.08)"><i></i>VQR<small>QR de viaje</small></span></dd></div>
+  </dl>
+  <figure class="diagram"><div class="scroll"><svg class="seq" viewBox="0 0 928 956" style="min-width:742px" role="img" aria-labelledby="qr-deuda-title qr-deuda-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="qr-deuda-title">Pago de deuda de viajes</title>
+<desc id="qr-deuda-desc">Reserva en Pismo, informe a VQR y confirmación</desc>
+<defs>
+<marker id="qr-deuda-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="qr-deuda-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker>
+<marker id="qr-deuda-open" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polyline points="0 0, 8 3, 0 6" fill="none" stroke="#7a8399" stroke-width="1.2"/></marker>
+</defs>
+<rect x="0" y="0" width="928" height="956" fill="#f5f5f5"/>
+<rect x="60" y="512" width="808" height="356" rx="4" fill="none" stroke="rgba(45,49,66,0.28)" stroke-width="1"/>
+<rect x="60" y="512" width="40" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.22)" stroke-width="1"/>
+<text x="80" y="524" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">ALT</text>
+<line x1="68" y1="724" x2="860" y2="724" stroke="rgba(45,49,66,0.20)" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="108" y="526" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[VQR acepta]</text>
+<text x="72" y="742" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[VQRClientException]</text>
+<line x1="116" y1="88" x2="116" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="348" y1="88" x2="348" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="580" y1="88" x2="580" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="812" y1="88" x2="812" y2="888" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="116" y1="158" x2="343" y2="158" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-deuda-arrow)"/>
+<path d="M348,190 H368 Q376,190 376,198 V206 Q376,214 368,214 H353" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-deuda-arrow)"/>
+<line x1="348" y1="270" x2="575" y2="270" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-deuda-arrow)"/>
+<line x1="580" y1="326" x2="353" y2="326" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-deuda-arrow)"/>
+<line x1="348" y1="382" x2="575" y2="382" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-deuda-arrow)"/>
+<line x1="580" y1="438" x2="353" y2="438" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-deuda-arrow)"/>
+<line x1="348" y1="494" x2="807" y2="494" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-deuda-arrow)"/>
+<line x1="812" y1="590" x2="353" y2="590" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-deuda-arrow)"/>
+<line x1="348" y1="646" x2="575" y2="646" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-deuda-arrow)"/>
+<line x1="348" y1="702" x2="121" y2="702" stroke="#0F4153" stroke-width="1.8" marker-end="url(#qr-deuda-accent)"/>
+<line x1="348" y1="790" x2="575" y2="790" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-deuda-arrow)"/>
+<line x1="348" y1="846" x2="121" y2="846" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-deuda-arrow)"/>
+<g class="lbl" data-step="1"><rect x="160.1" y="124" width="143.8" height="30" rx="2" fill="#f5f5f5"/><rect x="166.1" y="127" width="14" height="12" rx="2" fill="#2d3142"/><text x="173.1" y="136" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text><text x="186.1" y="136" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">PAGAR DEUDA</text><text x="166.1" y="149" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /v1/qr/pay-intention</text></g>
+<g class="lbl" data-step="2"><rect x="382.0" y="192" width="154.4" height="30" rx="2" fill="#f5f5f5"/><rect x="388.0" y="195" width="14" height="12" rx="2" fill="#2d3142"/><text x="395.0" y="204" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text><text x="408.0" y="204" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CALCULAR DEUDA TOTAL</text><text x="388.0" y="217" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">crea Debt · suma DebtDetail</text></g>
+<g class="lbl" data-step="3"><rect x="392.1" y="236" width="143.8" height="30" rx="2" fill="#f5f5f5"/><rect x="398.1" y="239" width="14" height="12" rx="2" fill="#2d3142"/><text x="405.1" y="248" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text><text x="418.1" y="248" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONSULTAR SALDO</text><text x="398.1" y="261" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">GET /accounts/v1/…/limits</text></g>
+<g class="lbl" data-step="4"><rect x="399.0" y="292" width="129.9" height="18" rx="2" fill="#f5f5f5"/><rect x="405.0" y="295" width="14" height="12" rx="2" fill="#2d3142"/><text x="412.0" y="304" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text><text x="425.0" y="304" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">SALDO DISPONIBLE</text></g>
+<g class="lbl" data-step="5"><rect x="368.4" y="348" width="191.2" height="30" rx="2" fill="#f5f5f5"/><rect x="374.4" y="351" width="14" height="12" rx="2" fill="#2d3142"/><text x="381.4" y="360" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text><text x="394.4" y="360" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESERVAR IMPORTE</text><text x="374.4" y="373" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /payment-methods/v2/transfers</text></g>
+<g class="lbl" data-step="6"><rect x="417.4" y="404" width="93.2" height="18" rx="2" fill="#f5f5f5"/><rect x="423.4" y="407" width="14" height="12" rx="2" fill="#2d3142"/><text x="430.4" y="416" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text><text x="443.4" y="416" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">TRACKINGID</text></g>
+<g class="lbl" data-step="7"><rect x="363.1" y="460" width="201.7" height="30" rx="2" fill="#f5f5f5"/><rect x="369.1" y="463" width="14" height="12" rx="2" fill="#2d3142"/><text x="376.1" y="472" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">7</text><text x="389.1" y="472" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">INFORMAR PAGO</text><text x="369.1" y="485" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /payment/debt/{wallet}/accounts</text></g>
+<g class="lbl" data-step="8"><rect x="661.6" y="556" width="68.7" height="18" rx="2" fill="#f5f5f5"/><rect x="667.6" y="559" width="14" height="12" rx="2" fill="#2d3142"/><text x="674.6" y="568" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">8</text><text x="687.6" y="568" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">200 OK</text></g>
+<g class="lbl" data-step="9"><rect x="377.6" y="612" width="172.8" height="30" rx="2" fill="#f5f5f5"/><rect x="383.6" y="615" width="14" height="12" rx="2" fill="#2d3142"/><text x="390.6" y="624" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">9</text><text x="403.6" y="624" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CONFIRMAR TRANSFERENCIA</text><text x="383.6" y="637" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">…/transfers/confirm</text></g>
+<g class="lbl" data-step="10"><rect x="188.5" y="668" width="87.1" height="18" rx="2" fill="#f5f5f5"/><rect x="194.5" y="671" width="14" height="12" rx="2" fill="#0F4153"/><text x="201.5" y="680" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">10</text><text x="214.5" y="680" fill="#0F4153" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">DEBT_PAID</text></g>
+<g class="lbl" data-step="11"><rect x="380.7" y="756" width="166.6" height="30" rx="2" fill="#f5f5f5"/><rect x="386.7" y="759" width="14" height="12" rx="2" fill="#2d3142"/><text x="393.7" y="768" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">11</text><text x="406.7" y="768" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CANCELAR TRANSFERENCIA</text><text x="386.7" y="781" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">…/transfers/cancel</text></g>
+<g class="lbl" data-step="12"><rect x="182.3" y="812" width="99.3" height="18" rx="2" fill="#f5f5f5"/><rect x="188.3" y="815" width="14" height="12" rx="2" fill="#2d3142"/><text x="195.3" y="824" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">12</text><text x="208.3" y="824" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ERROR_RETRY</text></g>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.5"/>
+<rect x="34" y="34" width="48" height="14" rx="2" fill="#2D3142"/>
+<text x="40" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">USUARIO</text>
+<text x="34" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">App Mi SUBE</text>
+<text x="34" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">mobile</text>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="266" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="272" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="266" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Cash Service</text>
+<text x="266" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-cash-service</text>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="rgba(255,169,69,0.12)" stroke="#FFA945" stroke-width="1.5"/>
+<rect x="498" y="34" width="38" height="14" rx="2" fill="#FFA945"/>
+<text x="504" y="44" fill="#111111" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PISMO</text>
+<text x="498" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pismo</text>
+<text x="498" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">procesador · PCI</text>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="rgba(0,151,196,0.08)" stroke="#0097C4" stroke-width="1.5"/>
+<rect x="730" y="34" width="27" height="14" rx="2" fill="#0097C4"/>
+<text x="736" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">VQR</text>
+<text x="730" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">VQR</text>
+<text x="730" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">QR de viaje</text>
+<rect x="88" y="888" width="56" height="4" rx="2" fill="#2D3142"/>
+<rect x="320" y="888" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="552" y="888" width="56" height="4" rx="2" fill="#FFA945"/>
+<rect x="784" y="888" width="56" height="4" rx="2" fill="#0097C4"/>
+<line x1="24" y1="904" x2="904" y2="904" stroke="rgba(45,49,66,0.12)"/>
+<line x1="24" y1="924" x2="58" y2="924" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#qr-deuda-arrow)"/>
+<text x="68" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">LLAMADA SÍNCRONA</text>
+<line x1="187" y1="924" x2="221" y2="924" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-deuda-arrow)"/>
+<text x="231" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPUESTA</text>
+<line x1="306" y1="924" x2="340" y2="924" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#qr-deuda-open)"/>
+<text x="350" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EVENTO ASÍNCRONO</text>
+<line x1="469" y1="924" x2="503" y2="924" stroke="#0F4153" stroke-width="1.8" marker-end="url(#qr-deuda-accent)"/>
+<text x="513" y="927" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESULTADO PRINCIPAL</text>
+</svg></div>
+    <figcaption>Pasá el mouse sobre un paso de la tabla para resaltarlo en el diagrama.</figcaption></figure>
+  <details open><summary>Paso a paso</summary><div class="table-wrap"><table class="steps"><thead><tr><th>#</th><th>Origen → destino</th><th>Mensaje</th><th>Dónde en el código</th></tr></thead><tbody><tr data-step="1"><td class="n">1</td><td class="route">App Mi SUBE → Cash Service<small>llamada</small></td><td>Pagar deuda <code>POST /v1/qr/pay-intention</code></td><td class="code">QrController.payDebtQr → PayDebtBusinessService.execute</td></tr><tr data-step="2"><td class="n">2</td><td class="route">Cash Service<small>interno</small></td><td>Calcular deuda total <code>crea Debt · suma DebtDetail</code></td><td class="code">createNewDebt; debtDetailService.calculateTotalDebtAmounts</td></tr><tr data-step="3"><td class="n">3</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Consultar saldo <code>GET /accounts/v1/…/limits</code></td><td class="code">getSaldoInPismo</td></tr><tr data-step="4"><td class="n">4</td><td class="route">Pismo → Cash Service<small>respuesta</small></td><td>Saldo disponible</td><td class="code">Saldo ≤ deuda → NO_BALANCE</td></tr><tr data-step="5"><td class="n">5</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Reservar importe <code>POST /payment-methods/v2/transfers</code></td><td class="code">withdrawBalance · DEBIT_CLOSE_LOOP_TRAVEL_DEBT → cuenta NSSA</td></tr><tr data-step="6"><td class="n">6</td><td class="route">Pismo → Cash Service<small>respuesta</small></td><td>trackingId</td><td class="code"></td></tr><tr data-step="7"><td class="n">7</td><td class="route">Cash Service → VQR<small>llamada</small></td><td>Informar pago <code>POST /payment/debt/{wallet}/accounts</code></td><td class="code">vqrPagarDeuda → VqrService.paymentDebt</td></tr><tr class="frag"><td colspan="4">ALT [VQR acepta]</td></tr><tr data-step="8"><td class="n">8</td><td class="route">VQR → Cash Service<small>respuesta</small></td><td>200 OK</td><td class="code"></td></tr><tr data-step="9"><td class="n">9</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Confirmar transferencia <code>…/transfers/confirm</code></td><td class="code">confirmWithdrawBalance; Debt inactiva con paymentDate</td></tr><tr data-step="10"><td class="n h">10</td><td class="route">Cash Service → App Mi SUBE<small>resultado</small></td><td>DEBT_PAID</td><td class="code">“Deuda saldada correctamente”</td></tr><tr class="frag"><td colspan="4">ELSE [VQRClientException]</td></tr><tr data-step="11"><td class="n">11</td><td class="route">Cash Service → Pismo<small>llamada</small></td><td>Cancelar transferencia <code>…/transfers/cancel</code></td><td class="code">cancelWithdrawBalance</td></tr><tr data-step="12"><td class="n">12</td><td class="route">Cash Service → App Mi SUBE<small>respuesta</small></td><td>ERROR_RETRY</td><td class="code">Se borra el Debt creado</td></tr></tbody></table></div></details>
+  <div class="notes"><h3>Notas y casos borde</h3><ul><li>Mismo caso de uso en modo asíncrono: el evento <code>SETTLE_DEBT</code> (publicado al reinyectar un viaje con deuda) ejecuta este flujo con <code>AsyncMapper</code>.</li><li>Si ya hay un pago en proceso responde “Hay un pago en proceso”; sin deuda activa → DEBT_FREE.</li></ul></div>
+  
+</section>
+<section class="flow" id="alta-cuenta">
+  <p class="eyebrow">Caso 4 · A</p>
+  <h2>Alta de cuenta</h2>
+  <p class="sub">USER_CREATED → CVU en Coelsa → cuenta en Pismo → wallet activa</p>
+  <p class="summary">Al crearse el usuario único, Wallet Worker arma la billetera en pasos encadenados por Pub/Sub: da de alta el CVU en Coelsa, crea la cuenta en Pismo y finaliza el onboarding activando la wallet. Al final publica <code>WALLET_WALLET_CREATED</code>, que dispara el alias, el fee model y la tarjeta.</p>
+  <dl class="meta">
+    <div><dt>Disparador</dt><dd><code>Evento USER_CREATED (alta de usuario único)</code></dd></div>
+    <div><dt>Resultado</dt><dd>Wallet activa + WALLET_WALLET_CREATED</dd></div>
+    <div class="wide"><dt>Participantes</dt><dd class="chips"><span class="chip" style="--c:#7A8399;--t:rgba(122,131,153,0.10)"><i></i>Pub/Sub<small>GCP</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Wallet Worker<small>ms-wallet-worker</small></span><span class="chip" style="--c:#B23A48;--t:rgba(178,58,72,0.07)"><i></i>BNA / Coelsa<small>DEBIN · CVU · alias</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>Pismo<small>procesador · PCI</small></span></dd></div>
+  </dl>
+  <figure class="diagram"><div class="scroll"><svg class="seq" viewBox="0 0 928 864" style="min-width:742px" role="img" aria-labelledby="alta-cuenta-title alta-cuenta-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="alta-cuenta-title">Alta de cuenta</title>
+<desc id="alta-cuenta-desc">USER_CREATED → CVU en Coelsa → cuenta en Pismo → wallet activa</desc>
+<defs>
+<marker id="alta-cuenta-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="alta-cuenta-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker>
+<marker id="alta-cuenta-open" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polyline points="0 0, 8 3, 0 6" fill="none" stroke="#7a8399" stroke-width="1.2"/></marker>
+</defs>
+<rect x="0" y="0" width="928" height="864" fill="#f5f5f5"/>
+<line x1="116" y1="88" x2="116" y2="796" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="348" y1="88" x2="348" y2="796" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="580" y1="88" x2="580" y2="796" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="812" y1="88" x2="812" y2="796" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="116" y1="158" x2="343" y2="158" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-cuenta-open)"/>
+<path d="M348,190 H368 Q376,190 376,198 V206 Q376,214 368,214 H353" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-cuenta-arrow)"/>
+<line x1="348" y1="270" x2="575" y2="270" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-cuenta-arrow)"/>
+<line x1="580" y1="326" x2="353" y2="326" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-cuenta-arrow)"/>
+<line x1="348" y1="382" x2="121" y2="382" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-cuenta-open)"/>
+<line x1="116" y1="438" x2="343" y2="438" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-cuenta-open)"/>
+<line x1="348" y1="494" x2="807" y2="494" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-cuenta-arrow)"/>
+<line x1="812" y1="550" x2="353" y2="550" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-cuenta-arrow)"/>
+<line x1="348" y1="606" x2="121" y2="606" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-cuenta-open)"/>
+<line x1="116" y1="662" x2="343" y2="662" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-cuenta-open)"/>
+<path d="M348,694 H368 Q376,694 376,702 V710 Q376,718 368,718 H353" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-cuenta-arrow)"/>
+<line x1="348" y1="774" x2="121" y2="774" stroke="#0F4153" stroke-width="1.8" marker-end="url(#alta-cuenta-accent)"/>
+<g class="lbl" data-step="1"><rect x="170.7" y="124" width="122.7" height="30" rx="2" fill="#f5f5f5"/><rect x="176.7" y="127" width="14" height="12" rx="2" fill="#2d3142"/><text x="183.7" y="136" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text><text x="196.7" y="136" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">USER_CREATED</text><text x="176.7" y="149" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">AccountCreatedHandler</text></g>
+<g class="lbl" data-step="2"><rect x="382.0" y="192" width="138.5" height="30" rx="2" fill="#f5f5f5"/><rect x="388.0" y="195" width="14" height="12" rx="2" fill="#2d3142"/><text x="395.0" y="204" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text><text x="408.0" y="204" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CREAR WALLET</text><text x="388.0" y="217" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">verifica CUIL · INICIADO</text></g>
+<g class="lbl" data-step="3"><rect x="394.8" y="236" width="138.5" height="30" rx="2" fill="#f5f5f5"/><rect x="400.8" y="239" width="14" height="12" rx="2" fill="#2d3142"/><text x="407.8" y="248" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text><text x="420.8" y="248" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ALTA DE CVU</text><text x="400.8" y="261" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /apiCVU/CVU/AltaCVU</text></g>
+<g class="lbl" data-step="4"><rect x="417.4" y="292" width="93.2" height="18" rx="2" fill="#f5f5f5"/><rect x="423.4" y="295" width="14" height="12" rx="2" fill="#2d3142"/><text x="430.4" y="304" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text><text x="443.4" y="304" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">3200 · CVU</text></g>
+<g class="lbl" data-step="5"><rect x="160.9" y="348" width="142.2" height="18" rx="2" fill="#f5f5f5"/><rect x="166.9" y="351" width="14" height="12" rx="2" fill="#2d3142"/><text x="173.9" y="360" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text><text x="186.9" y="360" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">WALLET_CVU_CREATED</text></g>
+<g class="lbl" data-step="6"><rect x="181.2" y="404" width="101.6" height="30" rx="2" fill="#f5f5f5"/><rect x="187.2" y="407" width="14" height="12" rx="2" fill="#2d3142"/><text x="194.2" y="416" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text><text x="207.2" y="416" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ENTREGA</text><text x="187.2" y="429" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">CvuCreatedHandler</text></g>
+<g class="lbl" data-step="7"><rect x="357.9" y="460" width="212.3" height="30" rx="2" fill="#f5f5f5"/><rect x="363.9" y="463" width="14" height="12" rx="2" fill="#2d3142"/><text x="370.9" y="472" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">7</text><text x="383.9" y="472" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CREAR CUENTA</text><text x="363.9" y="485" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /acquisitions/v3/s2s/applications</text></g>
+<g class="lbl" data-step="8"><rect x="612.7" y="516" width="166.6" height="18" rx="2" fill="#f5f5f5"/><rect x="618.7" y="519" width="14" height="12" rx="2" fill="#2d3142"/><text x="625.7" y="528" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">8</text><text x="638.7" y="528" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ACCOUNTID · CUSTOMERID</text></g>
+<g class="lbl" data-step="9"><rect x="151.7" y="572" width="160.5" height="30" rx="2" fill="#f5f5f5"/><rect x="157.7" y="575" width="14" height="12" rx="2" fill="#2d3142"/><text x="164.7" y="584" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">9</text><text x="177.7" y="584" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">PISMO_ACCOUNT_CREATED</text><text x="157.7" y="597" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">WALLET_PISMO_ACCOUNT_CREATED</text></g>
+<g class="lbl" data-step="10"><rect x="146.9" y="628" width="170.1" height="30" rx="2" fill="#f5f5f5"/><rect x="152.9" y="631" width="14" height="12" rx="2" fill="#2d3142"/><text x="159.9" y="640" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">10</text><text x="172.9" y="640" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ENTREGA</text><text x="152.9" y="653" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">ProcessorAccountCreatedHandler</text></g>
+<g class="lbl" data-step="11"><rect x="382.0" y="696" width="185.9" height="30" rx="2" fill="#f5f5f5"/><rect x="388.0" y="699" width="14" height="12" rx="2" fill="#2d3142"/><text x="395.0" y="708" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">11</text><text x="408.0" y="708" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">FINALIZAR ONBOARDING</text><text x="388.0" y="721" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">FINALIZADO · wallet activa · push</text></g>
+<g class="lbl" data-step="12"><rect x="151.7" y="740" width="160.5" height="18" rx="2" fill="#f5f5f5"/><rect x="157.7" y="743" width="14" height="12" rx="2" fill="#0F4153"/><text x="164.7" y="752" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">12</text><text x="177.7" y="752" fill="#0F4153" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">WALLET_WALLET_CREATED</text></g>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="rgba(122,131,153,0.10)" stroke="#7A8399" stroke-width="1.5" stroke-dasharray="5,4"/>
+<rect x="34" y="34" width="48" height="14" rx="2" fill="#7A8399"/>
+<text x="40" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PUB/SUB</text>
+<text x="34" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pub/Sub</text>
+<text x="34" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">GCP</text>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="266" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="272" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="266" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Wallet Worker</text>
+<text x="266" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-wallet-worker</text>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="rgba(178,58,72,0.07)" stroke="#B23A48" stroke-width="1.5"/>
+<rect x="498" y="34" width="74" height="14" rx="2" fill="#B23A48"/>
+<text x="504" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">BNA · COELSA</text>
+<text x="498" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">BNA / Coelsa</text>
+<text x="498" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">DEBIN · CVU · alias</text>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="rgba(255,169,69,0.12)" stroke="#FFA945" stroke-width="1.5"/>
+<rect x="730" y="34" width="38" height="14" rx="2" fill="#FFA945"/>
+<text x="736" y="44" fill="#111111" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PISMO</text>
+<text x="730" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pismo</text>
+<text x="730" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">procesador · PCI</text>
+<rect x="88" y="796" width="56" height="4" rx="2" fill="#7A8399"/>
+<rect x="320" y="796" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="552" y="796" width="56" height="4" rx="2" fill="#B23A48"/>
+<rect x="784" y="796" width="56" height="4" rx="2" fill="#FFA945"/>
+<line x1="24" y1="812" x2="904" y2="812" stroke="rgba(45,49,66,0.12)"/>
+<line x1="24" y1="832" x2="58" y2="832" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-cuenta-arrow)"/>
+<text x="68" y="835" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">LLAMADA SÍNCRONA</text>
+<line x1="187" y1="832" x2="221" y2="832" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-cuenta-arrow)"/>
+<text x="231" y="835" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPUESTA</text>
+<line x1="306" y1="832" x2="340" y2="832" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-cuenta-open)"/>
+<text x="350" y="835" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EVENTO ASÍNCRONO</text>
+<line x1="469" y1="832" x2="503" y2="832" stroke="#0F4153" stroke-width="1.8" marker-end="url(#alta-cuenta-accent)"/>
+<text x="513" y="835" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESULTADO PRINCIPAL</text>
+</svg></div>
+    <figcaption>Pasá el mouse sobre un paso de la tabla para resaltarlo en el diagrama.</figcaption></figure>
+  <details open><summary>Paso a paso</summary><div class="table-wrap"><table class="steps"><thead><tr><th>#</th><th>Origen → destino</th><th>Mensaje</th><th>Dónde en el código</th></tr></thead><tbody><tr data-step="1"><td class="n">1</td><td class="route">Pub/Sub → Wallet Worker<small>evento</small></td><td>USER_CREATED <code>AccountCreatedHandler</code></td><td class="code">CoelsaAccountBusinessService.createWallet</td></tr><tr data-step="2"><td class="n">2</td><td class="route">Wallet Worker<small>interno</small></td><td>Crear wallet <code>verifica CUIL · INICIADO</code></td><td class="code">verifyPismoAccountExistsForCuil (POST /accounts/v3/accounts/search); createWalletOnboarding</td></tr><tr data-step="3"><td class="n">3</td><td class="route">Wallet Worker → BNA / Coelsa<small>llamada</small></td><td>Alta de CVU <code>POST /apiCVU/CVU/AltaCVU</code></td><td class="code">BnaCoelsaService.createCvu</td></tr><tr data-step="4"><td class="n">4</td><td class="route">BNA / Coelsa → Wallet Worker<small>respuesta</small></td><td>3200 · CVU</td><td class="code">3200/3201 OK → CoelsaAccount; step ALTA_CVU</td></tr><tr data-step="5"><td class="n">5</td><td class="route">Wallet Worker → Pub/Sub<small>evento</small></td><td>WALLET_CVU_CREATED</td><td class="code">CVUCreatedEvent</td></tr><tr data-step="6"><td class="n">6</td><td class="route">Pub/Sub → Wallet Worker<small>evento</small></td><td>Entrega <code>CvuCreatedHandler</code></td><td class="code">ProcessorProviderBusinessService.processPismoAccountCreation</td></tr><tr data-step="7"><td class="n">7</td><td class="route">Wallet Worker → Pismo<small>llamada</small></td><td>Crear cuenta <code>POST /acquisitions/v3/s2s/applications</code></td><td class="code">PismoService.createPismoAccount</td></tr><tr data-step="8"><td class="n">8</td><td class="route">Pismo → Wallet Worker<small>respuesta</small></td><td>accountId · customerId</td><td class="code">ProcessorAccount; step ALTA_PISMO</td></tr><tr data-step="9"><td class="n">9</td><td class="route">Wallet Worker → Pub/Sub<small>evento</small></td><td>PISMO_ACCOUNT_CREATED <code>WALLET_PISMO_ACCOUNT_CREATED</code></td><td class="code">ProcessorAccountCreatedEvent</td></tr><tr data-step="10"><td class="n">10</td><td class="route">Pub/Sub → Wallet Worker<small>evento</small></td><td>Entrega <code>ProcessorAccountCreatedHandler</code></td><td class="code">WalletOnboardingBusinessService.finishOnboarding</td></tr><tr data-step="11"><td class="n">11</td><td class="route">Wallet Worker<small>interno</small></td><td>Finalizar onboarding <code>FINALIZADO · wallet activa · push</code></td><td class="code">wallet.setActive(true); NotificationService.sendNotificationTopic</td></tr><tr data-step="12"><td class="n h">12</td><td class="route">Wallet Worker → Pub/Sub<small>resultado</small></td><td>WALLET_WALLET_CREATED</td><td class="code">createWalletCreatedEvent</td></tr></tbody></table></div></details>
+  <div class="notes"><h3>Notas y casos borde</h3><ul><li>Si el CUIL ya tiene cuenta Pismo asociada a otro userId → <code>EventFinalException</code> (no se reintenta).</li><li>Si Pismo responde 400 “Account already created”, se recupera la cuenta existente y el step queda OK.</li><li>Cada paso registra un <code>Step</code> (ALTA_CVU, ALTA_PISMO, NOTIFICAR_ALTA) en el onboarding.</li></ul></div>
+  <a class="next" href="#alta-post">Continúa en <b>Caso 4 · B — Después del alta: alias y fee model</b> →</a>
+</section>
+<section class="flow" id="alta-post">
+  <p class="eyebrow">Caso 4 · B</p>
+  <h2>Después del alta: alias y fee model</h2>
+  <p class="sub">Dos suscripciones de Wallet Worker a WALLET_WALLET_CREATED</p>
+  <p class="summary">El evento <code>WALLET_WALLET_CREATED</code> llega a dos suscripciones del worker. Una genera el alias del CVU en Coelsa; la otra consulta el perfil fiscal en AFIP y asigna en Pismo el modelo de comisiones e impuestos que corresponde.</p>
+  <dl class="meta">
+    <div><dt>Disparador</dt><dd><code>Evento WALLET_WALLET_CREATED</code></dd></div>
+    <div><dt>Resultado</dt><dd>Alias asignado + fee model en la cuenta Pismo</dd></div>
+    <div class="wide"><dt>Participantes</dt><dd class="chips"><span class="chip" style="--c:#7A8399;--t:rgba(122,131,153,0.10)"><i></i>Pub/Sub<small>GCP</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Wallet Worker<small>ms-wallet-worker</small></span><span class="chip" style="--c:#B23A48;--t:rgba(178,58,72,0.07)"><i></i>BNA / Coelsa<small>DEBIN · CVU · alias</small></span><span class="chip" style="--c:#8A6D3B;--t:rgba(138,109,59,0.08)"><i></i>AFIP<small>afip-service</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>Pismo<small>procesador · PCI</small></span></dd></div>
+  </dl>
+  <figure class="diagram"><div class="scroll"><svg class="seq" viewBox="0 0 1160 868" style="min-width:928px" role="img" aria-labelledby="alta-post-title alta-post-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="alta-post-title">Después del alta: alias y fee model</title>
+<desc id="alta-post-desc">Dos suscripciones de Wallet Worker a WALLET_WALLET_CREATED</desc>
+<defs>
+<marker id="alta-post-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="alta-post-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker>
+<marker id="alta-post-open" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polyline points="0 0, 8 3, 0 6" fill="none" stroke="#7a8399" stroke-width="1.2"/></marker>
+</defs>
+<rect x="0" y="0" width="1160" height="868" fill="#f5f5f5"/>
+<rect x="60" y="288" width="576" height="156" rx="4" fill="none" stroke="rgba(45,49,66,0.28)" stroke-width="1"/>
+<rect x="60" y="288" width="40" height="16" rx="2" fill="#f5f5f5" stroke="rgba(45,49,66,0.22)" stroke-width="1"/>
+<text x="80" y="300" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">OPT</text>
+<text x="108" y="302" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.04em">[0321 · alias en uso]</text>
+<line x1="116" y1="88" x2="116" y2="800" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="348" y1="88" x2="348" y2="800" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="580" y1="88" x2="580" y2="800" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="812" y1="88" x2="812" y2="800" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="1044" y1="88" x2="1044" y2="800" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="116" y1="158" x2="343" y2="158" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-post-open)"/>
+<line x1="348" y1="214" x2="575" y2="214" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-post-arrow)"/>
+<line x1="580" y1="270" x2="353" y2="270" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-post-arrow)"/>
+<line x1="348" y1="366" x2="575" y2="366" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-post-arrow)"/>
+<line x1="580" y1="422" x2="353" y2="422" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-post-arrow)"/>
+<line x1="116" y1="498" x2="343" y2="498" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-post-open)"/>
+<line x1="348" y1="554" x2="807" y2="554" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-post-arrow)"/>
+<line x1="812" y1="610" x2="353" y2="610" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-post-arrow)"/>
+<path d="M348,642 H368 Q376,642 376,650 V658 Q376,666 368,666 H353" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-post-arrow)"/>
+<line x1="348" y1="722" x2="1039" y2="722" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-post-arrow)"/>
+<line x1="1044" y1="778" x2="353" y2="778" stroke="#0F4153" stroke-width="1.8" marker-end="url(#alta-post-accent)"/>
+<g class="lbl" data-step="1"><rect x="151.7" y="124" width="160.5" height="30" rx="2" fill="#f5f5f5"/><rect x="157.7" y="127" width="14" height="12" rx="2" fill="#2d3142"/><text x="164.7" y="136" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text><text x="177.7" y="136" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">WALLET_WALLET_CREATED</text><text x="157.7" y="149" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">WalletWalletCreatedHandler</text></g>
+<g class="lbl" data-step="2"><rect x="365.8" y="180" width="196.4" height="30" rx="2" fill="#f5f5f5"/><rect x="371.8" y="183" width="14" height="12" rx="2" fill="#2d3142"/><text x="378.8" y="192" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text><text x="391.8" y="192" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CREAR ALIAS</text><text x="371.8" y="205" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /alias/apiAliasV1/AgregarAlias</text></g>
+<g class="lbl" data-step="3"><rect x="414.3" y="236" width="99.3" height="18" rx="2" fill="#f5f5f5"/><rect x="420.3" y="239" width="14" height="12" rx="2" fill="#2d3142"/><text x="427.3" y="248" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text><text x="440.3" y="248" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">0200 · 0321</text></g>
+<g class="lbl" data-step="4"><rect x="399.0" y="332" width="129.9" height="30" rx="2" fill="#f5f5f5"/><rect x="405.0" y="335" width="14" height="12" rx="2" fill="#2d3142"/><text x="412.0" y="344" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text><text x="425.0" y="344" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">REINTENTAR ALIAS</text><text x="405.0" y="357" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">alias + sufijo random</text></g>
+<g class="lbl" data-step="5"><rect x="411.3" y="388" width="105.4" height="18" rx="2" fill="#f5f5f5"/><rect x="417.3" y="391" width="14" height="12" rx="2" fill="#2d3142"/><text x="424.3" y="400" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text><text x="437.3" y="400" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">0200 · ALIAS</text></g>
+<g class="lbl" data-step="6"><rect x="151.7" y="464" width="160.5" height="30" rx="2" fill="#f5f5f5"/><rect x="157.7" y="467" width="14" height="12" rx="2" fill="#2d3142"/><text x="164.7" y="476" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text><text x="177.7" y="476" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">WALLET_WALLET_CREATED</text><text x="157.7" y="489" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">FeeModelsHandler</text></g>
+<g class="lbl" data-step="7"><rect x="371.0" y="520" width="185.9" height="30" rx="2" fill="#f5f5f5"/><rect x="377.0" y="523" width="14" height="12" rx="2" fill="#2d3142"/><text x="384.0" y="532" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">7</text><text x="397.0" y="532" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">DATOS FISCALES</text><text x="377.0" y="545" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">GET /getPersonInfoByCuitV2/{cuit}</text></g>
+<g class="lbl" data-step="8"><rect x="609.6" y="576" width="172.8" height="18" rx="2" fill="#f5f5f5"/><rect x="615.6" y="579" width="14" height="12" rx="2" fill="#2d3142"/><text x="622.6" y="588" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">8</text><text x="635.6" y="588" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">IVA · GANANCIAS · PROV.</text></g>
+<g class="lbl" data-step="9"><rect x="382.0" y="644" width="154.3" height="30" rx="2" fill="#f5f5f5"/><rect x="388.0" y="647" width="14" height="12" rx="2" fill="#2d3142"/><text x="395.0" y="656" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">9</text><text x="408.0" y="656" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ELEGIR FEE MODEL</text><text x="388.0" y="669" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">IVA · Ganancias · provincia</text></g>
+<g class="lbl" data-step="10"><rect x="389.5" y="688" width="149.0" height="30" rx="2" fill="#f5f5f5"/><rect x="395.5" y="691" width="14" height="12" rx="2" fill="#2d3142"/><text x="402.5" y="700" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">10</text><text x="415.5" y="700" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ASIGNAR FEE MODEL</text><text x="395.5" y="713" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">PUT /rates/v1/fee/models/…</text></g>
+<g class="lbl" data-step="11"><rect x="866.1" y="744" width="123.8" height="18" rx="2" fill="#f5f5f5"/><rect x="872.1" y="747" width="14" height="12" rx="2" fill="#0F4153"/><text x="879.1" y="756" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">11</text><text x="892.1" y="756" fill="#0F4153" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">MODELO ASIGNADO</text></g>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="rgba(122,131,153,0.10)" stroke="#7A8399" stroke-width="1.5" stroke-dasharray="5,4"/>
+<rect x="34" y="34" width="48" height="14" rx="2" fill="#7A8399"/>
+<text x="40" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PUB/SUB</text>
+<text x="34" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pub/Sub</text>
+<text x="34" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">GCP</text>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="266" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="272" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="266" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Wallet Worker</text>
+<text x="266" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-wallet-worker</text>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="rgba(178,58,72,0.07)" stroke="#B23A48" stroke-width="1.5"/>
+<rect x="498" y="34" width="74" height="14" rx="2" fill="#B23A48"/>
+<text x="504" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">BNA · COELSA</text>
+<text x="498" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">BNA / Coelsa</text>
+<text x="498" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">DEBIN · CVU · alias</text>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="720" y="24" width="184" height="64" rx="6" fill="rgba(138,109,59,0.08)" stroke="#8A6D3B" stroke-width="1.5"/>
+<rect x="730" y="34" width="32" height="14" rx="2" fill="#8A6D3B"/>
+<text x="736" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">AFIP</text>
+<text x="730" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">AFIP</text>
+<text x="730" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">afip-service</text>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="952" y="24" width="184" height="64" rx="6" fill="rgba(255,169,69,0.12)" stroke="#FFA945" stroke-width="1.5"/>
+<rect x="962" y="34" width="38" height="14" rx="2" fill="#FFA945"/>
+<text x="968" y="44" fill="#111111" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PISMO</text>
+<text x="962" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pismo</text>
+<text x="962" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">procesador · PCI</text>
+<rect x="88" y="800" width="56" height="4" rx="2" fill="#7A8399"/>
+<rect x="320" y="800" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="552" y="800" width="56" height="4" rx="2" fill="#B23A48"/>
+<rect x="784" y="800" width="56" height="4" rx="2" fill="#8A6D3B"/>
+<rect x="1016" y="800" width="56" height="4" rx="2" fill="#FFA945"/>
+<line x1="24" y1="816" x2="1136" y2="816" stroke="rgba(45,49,66,0.12)"/>
+<line x1="24" y1="836" x2="58" y2="836" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#alta-post-arrow)"/>
+<text x="68" y="839" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">LLAMADA SÍNCRONA</text>
+<line x1="187" y1="836" x2="221" y2="836" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-post-arrow)"/>
+<text x="231" y="839" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPUESTA</text>
+<line x1="306" y1="836" x2="340" y2="836" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#alta-post-open)"/>
+<text x="350" y="839" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EVENTO ASÍNCRONO</text>
+<line x1="469" y1="836" x2="503" y2="836" stroke="#0F4153" stroke-width="1.8" marker-end="url(#alta-post-accent)"/>
+<text x="513" y="839" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESULTADO PRINCIPAL</text>
+</svg></div>
+    <figcaption>Pasá el mouse sobre un paso de la tabla para resaltarlo en el diagrama.</figcaption></figure>
+  <details open><summary>Paso a paso</summary><div class="table-wrap"><table class="steps"><thead><tr><th>#</th><th>Origen → destino</th><th>Mensaje</th><th>Dónde en el código</th></tr></thead><tbody><tr data-step="1"><td class="n">1</td><td class="route">Pub/Sub → Wallet Worker<small>evento</small></td><td>WALLET_WALLET_CREATED <code>WalletWalletCreatedHandler</code></td><td class="code">CoelsaAliasBusinessService.createAlias</td></tr><tr data-step="2"><td class="n">2</td><td class="route">Wallet Worker → BNA / Coelsa<small>llamada</small></td><td>Crear alias <code>POST /alias/apiAliasV1/AgregarAlias</code></td><td class="code">BnaCoelsaService.crearAlias · alias derivado de titular + CUIT</td></tr><tr data-step="3"><td class="n">3</td><td class="route">BNA / Coelsa → Wallet Worker<small>respuesta</small></td><td>0200 · 0321</td><td class="code">0200 OK; 0321 alias en uso</td></tr><tr class="frag"><td colspan="4">OPT [0321 · alias en uso]</td></tr><tr data-step="4"><td class="n">4</td><td class="route">Wallet Worker → BNA / Coelsa<small>llamada</small></td><td>Reintentar alias <code>alias + sufijo random</code></td><td class="code">generateAlias(…, true)</td></tr><tr data-step="5"><td class="n">5</td><td class="route">BNA / Coelsa → Wallet Worker<small>respuesta</small></td><td>0200 · alias</td><td class="code"></td></tr><tr data-step="6"><td class="n">6</td><td class="route">Pub/Sub → Wallet Worker<small>evento</small></td><td>WALLET_WALLET_CREATED <code>FeeModelsHandler</code></td><td class="code">FeeModelsBusinessService.handleWalletCreated</td></tr><tr data-step="7"><td class="n">7</td><td class="route">Wallet Worker → AFIP<small>llamada</small></td><td>Datos fiscales <code>GET /getPersonInfoByCuitV2/{cuit}</code></td><td class="code">AfipService.getPersonInfo</td></tr><tr data-step="8"><td class="n">8</td><td class="route">AFIP → Wallet Worker<small>respuesta</small></td><td>IVA · Ganancias · prov.</td><td class="code">FiscalAddress + WalletFiscalProfile</td></tr><tr data-step="9"><td class="n">9</td><td class="route">Wallet Worker<small>interno</small></td><td>Elegir fee model <code>IVA · Ganancias · provincia</code></td><td class="code">classifier.determineIVA / determineGanancias → modelId</td></tr><tr data-step="10"><td class="n">10</td><td class="route">Wallet Worker → Pismo<small>llamada</small></td><td>Asignar fee model <code>PUT /rates/v1/fee/models/…</code></td><td class="code">PismoService.assignModelToAccount</td></tr><tr data-step="11"><td class="n h">11</td><td class="route">Pismo → Wallet Worker<small>resultado</small></td><td>Modelo asignado</td><td class="code"></td></tr></tbody></table></div></details>
+  <div class="notes"><h3>Notas y casos borde</h3><ul><li>Si el perfil fiscal no cambió, no se reasigna el modelo en Pismo.</li><li>En paralelo, Card Service consume el mismo evento y emite la tarjeta (<a href='#tarjeta'>caso 5</a>).</li></ul></div>
+  <a class="next" href="#tarjeta">Continúa en <b>Caso 5 — Creación de tarjeta VISA SUBE</b> →</a>
+</section>
+<section class="flow" id="tarjeta">
+  <p class="eyebrow">Caso 5</p>
+  <h2>Creación de tarjeta VISA SUBE</h2>
+  <p class="sub">Emisión, activación y cierre del onboarding de tarjeta</p>
+  <p class="summary">Card Service consume <code>WALLET_WALLET_CREATED</code>, registra la tarjeta y la emite en Pismo. Los eventos de Pismo (alta y actualización de tarjeta) llegan por Pub/Sub: con la tarjeta creada se pide la activación y, una vez activa, se notifica al usuario y se publica <code>CARD_ONBOARDING_COMPLETED</code>.</p>
+  <dl class="meta">
+    <div><dt>Disparador</dt><dd><code>Evento WALLET_WALLET_CREATED</code></dd></div>
+    <div><dt>Resultado</dt><dd>Tarjeta ACTIVE + push + CARD_ONBOARDING_COMPLETED</dd></div>
+    <div class="wide"><dt>Participantes</dt><dd class="chips"><span class="chip" style="--c:#7A8399;--t:rgba(122,131,153,0.10)"><i></i>Pub/Sub<small>GCP</small></span><span class="chip" style="--c:#0F4153;--t:rgba(15,65,83,0.07)"><i></i>Card Service<small>ms-card-service</small></span><span class="chip" style="--c:#FFA945;--t:rgba(255,169,69,0.12)"><i></i>Pismo<small>procesador · PCI</small></span></dd></div>
+  </dl>
+  <figure class="diagram"><div class="scroll"><svg class="seq" viewBox="0 0 696 808" style="min-width:556px" role="img" aria-labelledby="tarjeta-title tarjeta-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="tarjeta-title">Creación de tarjeta VISA SUBE</title>
+<desc id="tarjeta-desc">Emisión, activación y cierre del onboarding de tarjeta</desc>
+<defs>
+<marker id="tarjeta-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="tarjeta-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker>
+<marker id="tarjeta-open" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polyline points="0 0, 8 3, 0 6" fill="none" stroke="#7a8399" stroke-width="1.2"/></marker>
+</defs>
+<rect x="0" y="0" width="696" height="808" fill="#f5f5f5"/>
+<line x1="116" y1="88" x2="116" y2="740" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="348" y1="88" x2="348" y2="740" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="580" y1="88" x2="580" y2="740" stroke="rgba(45,49,66,0.22)" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="116" y1="158" x2="343" y2="158" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#tarjeta-open)"/>
+<path d="M348,190 H368 Q376,190 376,198 V206 Q376,214 368,214 H353" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#tarjeta-arrow)"/>
+<line x1="348" y1="270" x2="575" y2="270" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#tarjeta-arrow)"/>
+<line x1="580" y1="326" x2="353" y2="326" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#tarjeta-arrow)"/>
+<line x1="580" y1="382" x2="121" y2="382" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#tarjeta-open)"/>
+<line x1="116" y1="438" x2="343" y2="438" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#tarjeta-open)"/>
+<line x1="348" y1="494" x2="575" y2="494" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#tarjeta-arrow)"/>
+<line x1="580" y1="550" x2="121" y2="550" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#tarjeta-open)"/>
+<line x1="116" y1="606" x2="343" y2="606" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#tarjeta-open)"/>
+<line x1="348" y1="662" x2="121" y2="662" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#tarjeta-open)"/>
+<line x1="348" y1="718" x2="121" y2="718" stroke="#0F4153" stroke-width="1.8" marker-end="url(#tarjeta-accent)"/>
+<g class="lbl" data-step="1"><rect x="146.9" y="124" width="170.1" height="30" rx="2" fill="#f5f5f5"/><rect x="152.9" y="127" width="14" height="12" rx="2" fill="#2d3142"/><text x="159.9" y="136" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text><text x="172.9" y="136" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">WALLET_WALLET_CREATED</text><text x="152.9" y="149" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">ProcessorAccountCreatedHandler</text></g>
+<g class="lbl" data-step="2"><rect x="382.0" y="192" width="136.0" height="30" rx="2" fill="#f5f5f5"/><rect x="388.0" y="195" width="14" height="12" rx="2" fill="#2d3142"/><text x="395.0" y="204" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text><text x="408.0" y="204" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">REGISTRAR TARJETA</text><text x="388.0" y="217" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">VISA_SUBE · Redis 24 h</text></g>
+<g class="lbl" data-step="3"><rect x="402.7" y="236" width="122.7" height="30" rx="2" fill="#f5f5f5"/><rect x="408.7" y="239" width="14" height="12" rx="2" fill="#2d3142"/><text x="415.7" y="248" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text><text x="428.7" y="248" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EMITIR TARJETA</text><text x="408.7" y="261" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">POST /wallet/v2/cards</text></g>
+<g class="lbl" data-step="4"><rect x="410.6" y="292" width="106.9" height="30" rx="2" fill="#f5f5f5"/><rect x="416.6" y="295" width="14" height="12" rx="2" fill="#2d3142"/><text x="423.6" y="304" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text><text x="436.6" y="304" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CARDID</text><text x="416.6" y="317" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">status IN_PROGRESS</text></g>
+<g class="lbl" data-step="5"><rect x="411.3" y="348" width="105.4" height="30" rx="2" fill="#f5f5f5"/><rect x="417.3" y="351" width="14" height="12" rx="2" fill="#2d3142"/><text x="424.3" y="360" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text><text x="437.3" y="360" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CARD CREATED</text><text x="417.3" y="373" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">evento Pismo</text></g>
+<g class="lbl" data-step="6"><rect x="146.9" y="404" width="170.1" height="30" rx="2" fill="#f5f5f5"/><rect x="152.9" y="407" width="14" height="12" rx="2" fill="#2d3142"/><text x="159.9" y="416" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text><text x="172.9" y="416" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ENTREGA</text><text x="152.9" y="429" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">NotificationCardCreatedHandler</text></g>
+<g class="lbl" data-step="7"><rect x="363.1" y="460" width="201.7" height="30" rx="2" fill="#f5f5f5"/><rect x="369.1" y="463" width="14" height="12" rx="2" fill="#2d3142"/><text x="376.1" y="472" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">7</text><text x="389.1" y="472" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ACTIVAR TARJETA</text><text x="369.1" y="485" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">PUT /wallet/v1/…/cards/{id}/activate</text></g>
+<g class="lbl" data-step="8"><rect x="397.4" y="516" width="133.2" height="30" rx="2" fill="#f5f5f5"/><rect x="403.4" y="519" width="14" height="12" rx="2" fill="#2d3142"/><text x="410.4" y="528" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">8</text><text x="423.4" y="528" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CARD UPDATED</text><text x="403.4" y="541" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">operation_type=ACTIVATE</text></g>
+<g class="lbl" data-step="9"><rect x="170.7" y="572" width="122.7" height="30" rx="2" fill="#f5f5f5"/><rect x="176.7" y="575" width="14" height="12" rx="2" fill="#2d3142"/><text x="183.7" y="584" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">9</text><text x="196.7" y="584" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">ENTREGA</text><text x="176.7" y="597" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">ActivationCardHandler</text></g>
+<g class="lbl" data-step="10"><rect x="157.9" y="628" width="148.3" height="30" rx="2" fill="#f5f5f5"/><rect x="163.9" y="631" width="14" height="12" rx="2" fill="#2d3142"/><text x="170.9" y="640" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">10</text><text x="183.9" y="640" fill="#2d3142" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">PUSH: TARJETA LISTA</text><text x="163.9" y="653" fill="#7a8399" font-size="8.5" font-family="'Geist Mono', monospace">CARD_NOTIFICATION_MESSAGE</text></g>
+<g class="lbl" data-step="11"><rect x="139.5" y="684" width="185.0" height="18" rx="2" fill="#f5f5f5"/><rect x="145.5" y="687" width="14" height="12" rx="2" fill="#0F4153"/><text x="152.5" y="696" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">11</text><text x="165.5" y="696" fill="#0F4153" font-size="9" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.06em">CARD_ONBOARDING_COMPLETED</text></g>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="24" y="24" width="184" height="64" rx="6" fill="rgba(122,131,153,0.10)" stroke="#7A8399" stroke-width="1.5" stroke-dasharray="5,4"/>
+<rect x="34" y="34" width="48" height="14" rx="2" fill="#7A8399"/>
+<text x="40" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PUB/SUB</text>
+<text x="34" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pub/Sub</text>
+<text x="34" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">GCP</text>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="256" y="24" width="184" height="64" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.5"/>
+<rect x="266" y="34" width="69" height="14" rx="2" fill="#0F4153"/>
+<text x="272" y="44" fill="#ffffff" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">SUBE · NSSA</text>
+<text x="266" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Card Service</text>
+<text x="266" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">ms-card-service</text>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="#f5f5f5"/>
+<rect x="488" y="24" width="184" height="64" rx="6" fill="rgba(255,169,69,0.12)" stroke="#FFA945" stroke-width="1.5"/>
+<rect x="498" y="34" width="38" height="14" rx="2" fill="#FFA945"/>
+<text x="504" y="44" fill="#111111" font-size="7.5" font-weight="500" font-family="'Geist Mono', monospace" letter-spacing="0.14em">PISMO</text>
+<text x="498" y="66" fill="#2d3142" font-size="13" font-weight="600" font-family="Geist, sans-serif">Pismo</text>
+<text x="498" y="79" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">procesador · PCI</text>
+<rect x="88" y="740" width="56" height="4" rx="2" fill="#7A8399"/>
+<rect x="320" y="740" width="56" height="4" rx="2" fill="#0F4153"/>
+<rect x="552" y="740" width="56" height="4" rx="2" fill="#FFA945"/>
+<line x1="24" y1="756" x2="672" y2="756" stroke="rgba(45,49,66,0.12)"/>
+<line x1="24" y1="776" x2="58" y2="776" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#tarjeta-arrow)"/>
+<text x="68" y="779" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">LLAMADA SÍNCRONA</text>
+<line x1="187" y1="776" x2="221" y2="776" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#tarjeta-arrow)"/>
+<text x="231" y="779" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESPUESTA</text>
+<line x1="306" y1="776" x2="340" y2="776" stroke="#7a8399" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#tarjeta-open)"/>
+<text x="350" y="779" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">EVENTO ASÍNCRONO</text>
+<line x1="469" y1="776" x2="503" y2="776" stroke="#0F4153" stroke-width="1.8" marker-end="url(#tarjeta-accent)"/>
+<text x="513" y="779" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" letter-spacing="0.06em">RESULTADO PRINCIPAL</text>
+</svg></div>
+    <figcaption>Pasá el mouse sobre un paso de la tabla para resaltarlo en el diagrama.</figcaption></figure>
+  <details open><summary>Paso a paso</summary><div class="table-wrap"><table class="steps"><thead><tr><th>#</th><th>Origen → destino</th><th>Mensaje</th><th>Dónde en el código</th></tr></thead><tbody><tr data-step="1"><td class="n">1</td><td class="route">Pub/Sub → Card Service<small>evento</small></td><td>WALLET_WALLET_CREATED <code>ProcessorAccountCreatedHandler</code></td><td class="code">IssueVisaSubeBusinessService.issueVisaSube + CardOnboardingBusinessService.registerNewOnboarding</td></tr><tr data-step="2"><td class="n">2</td><td class="route">Card Service<small>interno</small></td><td>Registrar tarjeta <code>VISA_SUBE · Redis 24 h</code></td><td class="code">Card DIGITAL/VISA_SUBE con embossingCustomField; clave de onboarding en Redis</td></tr><tr data-step="3"><td class="n">3</td><td class="route">Card Service → Pismo<small>llamada</small></td><td>Emitir tarjeta <code>POST /wallet/v2/cards</code></td><td class="code">PismoService.createCard (PLASTIC)</td></tr><tr data-step="4"><td class="n">4</td><td class="route">Pismo → Card Service<small>respuesta</small></td><td>cardId <code>status IN_PROGRESS</code></td><td class="code">updateSuccessfulCreation</td></tr><tr data-step="5"><td class="n">5</td><td class="route">Pismo → Pub/Sub<small>evento</small></td><td>Card created <code>evento Pismo</code></td><td class="code">Tópico PISMO_CARD_CREATED</td></tr><tr data-step="6"><td class="n">6</td><td class="route">Pub/Sub → Card Service<small>evento</small></td><td>Entrega <code>NotificationCardCreatedHandler</code></td><td class="code">CardFinishRegisterService.setCardCreated</td></tr><tr data-step="7"><td class="n">7</td><td class="route">Card Service → Pismo<small>llamada</small></td><td>Activar tarjeta <code>PUT /wallet/v1/…/cards/{id}/activate</code></td><td class="code">PismoService.activateCard (si status = success)</td></tr><tr data-step="8"><td class="n">8</td><td class="route">Pismo → Pub/Sub<small>evento</small></td><td>Card updated <code>operation_type=ACTIVATE</code></td><td class="code">Tópico PISMO_CARD_UPDATED</td></tr><tr data-step="9"><td class="n">9</td><td class="route">Pub/Sub → Card Service<small>evento</small></td><td>Entrega <code>ActivationCardHandler</code></td><td class="code">CardFinishRegisterService.setActivationCard · card_status NORMAL → ACTIVE</td></tr><tr data-step="10"><td class="n">10</td><td class="route">Card Service → Pub/Sub<small>evento</small></td><td>Push: tarjeta lista <code>CARD_NOTIFICATION_MESSAGE</code></td><td class="code">“Tu tarjeta prepaga está lista”</td></tr><tr data-step="11"><td class="n h">11</td><td class="route">Card Service → Pub/Sub<small>resultado</small></td><td>CARD_ONBOARDING_COMPLETED</td><td class="code">CardOnboardingBusinessService.completeOnboarding (si existe la clave en Redis)</td></tr></tbody></table></div></details>
+  <div class="notes"><h3>Notas y casos borde</h3><ul><li>Idempotencia: si la wallet ya tiene tarjeta con <code>pismoCardId</code>, no se emite otra.</li><li>Si Pismo falla al emitir, la tarjeta queda en estado ERROR; status PENDING → DELAYED.</li><li>Después, el embozado (archivo de plásticos) sigue por <code>PISMO_ADDRESS_CREATED</code> y <code>EMBOSS_FILE_FINALIZE</code>; no se incluye en este diagrama.</li></ul></div>
+  
+</section>
+<section class="flow" id="eventos">
+  <p class="eyebrow">Referencia</p>
+  <h2>Mapa de eventos Pub/Sub</h2>
+  <p class="sub">Quién publica y quién consume cada evento que aparece en los diagramas</p>
+  <div class="table-wrap"><table><thead><tr><th>Evento</th><th>Publica</th><th>Consume</th><th>Caso</th></tr></thead>
+  <tbody><tr><td><code>USER_CREATED</code></td><td>Alta de usuario único (fuera de la billetera)</td><td>wallet-worker</td><td>4 · A</td></tr><tr><td><code>WALLET_CVU_CREATED</code></td><td>wallet-worker</td><td>wallet-worker</td><td>4 · A</td></tr><tr><td><code>WALLET_PISMO_ACCOUNT_CREATED</code></td><td>wallet-worker</td><td>wallet-worker</td><td>4 · A</td></tr><tr><td><code>WALLET_WALLET_CREATED</code></td><td>wallet-worker</td><td>wallet-worker (alias, fee models) · card-service</td><td>4 · B · 5</td></tr><tr><td><code>PISMO_CARD_CREATED / UPDATED</code></td><td>Pismo</td><td>card-service</td><td>5</td></tr><tr><td><code>CARD_ONBOARDING_COMPLETED</code></td><td>card-service</td><td>integraciones de terceros</td><td>5</td></tr><tr><td><code>HOOK_SERVICE_AVISOS</code></td><td>hook-service</td><td>cash-service</td><td>1 · A · 2</td></tr><tr><td><code>PENDING_TRANSFER</code></td><td>cash-service</td><td>cash-service</td><td>1 · B</td></tr><tr><td><code>TRANSACTION_CREATED</code></td><td>cash-service</td><td>consumidores de movimientos</td><td>1 · A · 2</td></tr><tr><td><code>SETTLE_DEBT</code></td><td>cash-service</td><td>cash-service</td><td>3 · B · 3 · C</td></tr><tr><td><code>TRX / WALLET / CARD_NOTIFICATION_MESSAGE</code></td><td>cash · worker · card</td><td>servicio de notificaciones push</td><td>varios</td></tr></tbody></table></div>
+</section>
+<footer>Generado con diagramas/generar_portal.py · estilo diagram-design · relevado del código fuente de ms-cash-service, ms-hook-service, ms-wallet-service, ms-wallet-worker y ms-card-service.</footer>
+</main>
+</div>
+<script>
+// resalta en el diagrama el paso sobre el que está el mouse en la tabla
+document.querySelectorAll('section.flow').forEach(sec=>{
+  const fig=sec.querySelector('figure.diagram'); if(!fig) return;
+  sec.querySelectorAll('tr[data-step]').forEach(tr=>{
+    const n=tr.dataset.step;
+    tr.addEventListener('mouseenter',()=>{fig.classList.add('dim');
+      fig.querySelectorAll('g.lbl').forEach(g=>g.classList.toggle('on',g.dataset.step===n));});
+    tr.addEventListener('mouseleave',()=>{fig.classList.remove('dim');});
+  });
+});
+// marca en el índice la sección visible
+const links=[...document.querySelectorAll('nav.side a')];
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}})},{rootMargin:'-30% 0px -60% 0px'});
+document.querySelectorAll('section.flow').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
