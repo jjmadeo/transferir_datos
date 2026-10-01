@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Billetera SUBE funcional</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--paper:#f5f5f5;--ink:#2d3142;--muted:#4f5d75;--soft:#7a8399;--rule:rgba(45,49,66,.12);--rule2:#bfc0c0;--accent:#0F4153;--accent-t:rgba(15,65,83,.07);--card:#fff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Geist,system-ui,sans-serif;font-size:15px;line-height:1.55}
+a{color:var(--accent)}
+.layout{display:grid;grid-template-columns:264px minmax(0,1fr);max-width:1600px;margin:0 auto}
+nav.side{position:sticky;top:0;height:100vh;overflow:auto;padding:32px 20px 32px 24px;border-right:1px solid var(--rule)}
+.brand{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin:0 0 4px}
+.brand-t{font-family:'Instrument Serif',serif;font-size:24px;line-height:1.1;margin:0 0 24px;color:var(--accent)}
+nav.side ul{list-style:none;padding:0;margin:0}
+nav.side li.g{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:20px 0 6px}
+nav.side li a{display:block;padding:5px 10px;margin-left:-10px;border-radius:4px;color:var(--ink);text-decoration:none;font-size:13.5px;border-left:2px solid transparent}
+nav.side li a:hover{background:var(--accent-t)}
+nav.side li a.active{border-left-color:var(--accent);background:var(--accent-t);color:var(--accent);font-weight:500}
+main{padding:48px 40px 96px;min-width:0}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin:0}
+.hero h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(2.2rem,4vw,3.2rem);line-height:1.05;margin:8px 0 16px;max-width:22ch;text-wrap:balance}
+.hero h1 em{color:var(--accent)}
+.lead{max-width:68ch;color:var(--muted);font-size:16px;margin:0 0 28px}
+.cards{display:flex;flex-wrap:wrap;gap:16px}
+.card{flex:1 1 240px;background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:18px 20px 12px}
+.card h3{margin:0 0 8px;font-size:16px}
+.card ul{list-style:none;padding:0;margin:0;border-top:1px solid var(--rule)}
+.card li a{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink);font-size:14px}
+.card li:last-child a{border-bottom:0}
+.card li a:hover{color:var(--accent)}
+.card li span{font-family:'Geist Mono',monospace;font-size:10px;color:var(--soft);min-width:72px;white-space:nowrap;letter-spacing:.06em;text-transform:uppercase}
+.flow{margin-top:72px;padding-top:40px;border-top:1px solid var(--rule)}
+.flow h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:2.2rem;line-height:1.1;margin:6px 0 10px}
+.summary{max-width:78ch;margin:0 0 20px}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden;margin:0 0 24px}
+.meta>div{background:var(--card);padding:10px 14px}
+.meta .wide{grid-column:1/-1}
+.meta dt{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+.meta dd{margin:2px 0 0;font-size:14px}
+.meta dd.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px 4px 8px;border:1px solid var(--c);border-radius:4px;font-size:12.5px;font-weight:600;white-space:nowrap;background:var(--card)}
+.chip i{width:8px;height:8px;border-radius:2px;background:var(--c)}
+.chip small{font-family:'Geist Mono',monospace;font-weight:400;font-size:10px;color:var(--soft)}
+figure{margin:0 0 28px;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:12px}
+.scroll{overflow-x:auto}
+figure svg{display:block;width:100%;height:auto}
+.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:start}
+h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:1.5rem;margin:0 0 10px}
+.table-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{text-align:left;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);font-weight:500;padding:10px 12px;border-bottom:1px solid var(--rule2)}
+td{padding:10px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+td:first-child,th:first-child{white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td b{font-weight:600}
+.dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.rules{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:6px;padding:16px 20px}
+.rules ol{margin:0;padding-left:20px}
+.rules li{margin:6px 0}
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden;margin:0}
+.gloss div{background:var(--card);padding:12px 14px;font-size:13.5px;color:var(--muted)}
+.gloss dt{font-weight:600;color:var(--ink);font-size:14px}
+.gloss dd{margin:2px 0 0}
+footer{margin-top:80px;padding-top:20px;border-top:1px solid var(--rule);font-family:'Geist Mono',monospace;font-size:11px;color:var(--soft)}
+@media (max-width:1000px){
+ .layout{display:block}
+ nav.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--rule);padding:20px 16px}
+ nav.side ul{display:none}
+ main{padding:28px 16px 64px}
+ .meta,.cols{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="side" aria-label="Casos de uso">
+  <p class="brand">NSSA · Billetera SUBE</p>
+  <p class="brand-t">Vista funcional</p>
+  <ul><li class="g">Dinero que sale</li><li><a href="#transferir">Caso 1 — Transferencia a otro banco</a></li><li class="g">Dinero que entra</li><li><a href="#recibir">Caso 2 — Recibir dinero de otro banco</a></li><li class="g">Viajar con QR</li><li><a href="#qr">Caso 3 · A — Generar el QR para viajar</a></li><li><a href="#viaje">Caso 3 · B — Pagar el viaje</a></li><li><a href="#deuda">Caso 3 · C — Saldar la deuda de viajes</a></li><li class="g">Alta de cuenta y tarjeta</li><li><a href="#alta">Caso 4 — Alta de la billetera</a></li><li><a href="#tarjeta">Caso 5 — Tarjeta VISA SUBE</a></li>
+    <li class="g">Referencia</li>
+    <li><a href="#glosario">Glosario</a></li>
+  </ul>
+</nav>
+<main>
+<header class="hero">
+  <p class="eyebrow">Flujos de negocio · billetera SUBE</p>
+  <h1>Qué pasa en la <em>billetera SUBE</em>, paso a paso</h1>
+  <p class="lead">Siete flujos explicados desde el negocio: quién hace cada paso, qué decide la billetera y qué ve
+  el usuario al final. Cada caso trae el diagrama por carriles, los resultados posibles y las reglas que aplican.</p>
+  <div class="cards"><article class="card"><h3>Dinero que sale</h3><ul><li><a href="#transferir"><span>Caso 1</span>Transferencia a otro banco</a></li></ul></article><article class="card"><h3>Dinero que entra</h3><ul><li><a href="#recibir"><span>Caso 2</span>Recibir dinero de otro banco</a></li></ul></article><article class="card"><h3>Viajar con QR</h3><ul><li><a href="#qr"><span>Caso 3 · A</span>Generar el QR para viajar</a></li><li><a href="#viaje"><span>Caso 3 · B</span>Pagar el viaje</a></li><li><a href="#deuda"><span>Caso 3 · C</span>Saldar la deuda de viajes</a></li></ul></article><article class="card"><h3>Alta de cuenta y tarjeta</h3><ul><li><a href="#alta"><span>Caso 4</span>Alta de la billetera</a></li><li><a href="#tarjeta"><span>Caso 5</span>Tarjeta VISA SUBE</a></li></ul></article></div>
+</header>
+
+<section class="flow" id="transferir">
+  <p class="eyebrow">Caso 1 · Dinero que sale</p>
+  <h2>Transferencia a otro banco</h2>
+  <p class="summary">Un usuario envía dinero a una cuenta de otro banco o billetera. La billetera reserva el dinero, lo envía por la red bancaria y, según la respuesta del banco destino, confirma el envío, lo anula o lo deja en proceso.</p>
+  <dl class="meta">
+    <div><dt>Empieza cuando</dt><dd>El usuario confirma una transferencia en la app</dd></div>
+    <div><dt>Termina en</dt><dd>Enviada, Rechazada o En proceso</dd></div>
+    <div class="wide"><dt>Participan</dt><dd class="chips"><span class="chip" style="--c:#2D3142"><i></i>Usuario<small>App Mi SUBE</small></span><span class="chip" style="--c:#0F4153"><i></i>Billetera Sube<small>NSSA</small></span><span class="chip" style="--c:#FFA945"><i></i>Procesador<small>Pismo · saldo</small></span><span class="chip" style="--c:#B23A48"><i></i>Red Bancaria<small>BNA / Coelsa</small></span></dd></div>
+  </dl>
+  <figure><div class="scroll"><svg viewBox="0 0 1264 600" style="min-width:1011px" role="img" aria-labelledby="transferir-title transferir-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="transferir-title">Transferencia a otro banco</title>
+<desc id="transferir-desc">Un usuario envía dinero a una cuenta de otro banco o billetera. La billetera reserva el dinero, lo envía por la red bancaria y, según la res</desc>
+<defs><marker id="transferir-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="transferir-x" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker></defs>
+<rect x="0" y="0" width="1264" height="600" fill="#f5f5f5"/>
+<rect x="16" y="16" width="1232" height="128" fill="rgba(255,255,255,0.55)"/>
+<rect x="16" y="16" width="4" height="128" fill="#2D3142"/>
+<text x="32" y="74" fill="#2d3142" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">USUARIO</text>
+<text x="32" y="90" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">App Mi SUBE</text>
+<rect x="16" y="144" width="1232" height="128" fill="rgba(15,65,83,0.035)"/>
+<line x1="16" y1="144" x2="1248" y2="144" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="144" width="4" height="128" fill="#0F4153"/>
+<text x="32" y="202" fill="#0F4153" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">BILLETERA SUBE</text>
+<text x="32" y="218" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">NSSA</text>
+<rect x="16" y="272" width="1232" height="128" fill="rgba(255,169,69,0.06)"/>
+<line x1="16" y1="272" x2="1248" y2="272" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="272" width="4" height="128" fill="#FFA945"/>
+<text x="32" y="330" fill="#9a5a10" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">PROCESADOR</text>
+<text x="32" y="346" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">Pismo · saldo</text>
+<rect x="16" y="400" width="1232" height="128" fill="rgba(178,58,72,0.035)"/>
+<line x1="16" y1="400" x2="1248" y2="400" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="400" width="4" height="128" fill="#B23A48"/>
+<text x="32" y="458" fill="#B23A48" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">RED BANCARIA</text>
+<text x="32" y="474" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">BNA / Coelsa</text>
+<rect x="16" y="16" width="1232" height="512" fill="none" stroke="rgba(45,49,66,0.18)"/>
+<line x1="168" y1="16" x2="168" y2="528" stroke="rgba(45,49,66,0.12)"/>
+<path d="M340,80 H436 Q444,80 444,88 V176" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#transferir-a)"/>
+<path d="M520,208 H616 Q624,208 624,216 V304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#transferir-a)"/>
+<path d="M700,336 H796 Q804,336 804,344 V432" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#transferir-a)"/>
+<path d="M880,464 H976 Q984,464 984,456 V246" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#transferir-a)"/>
+<path d="M1028,208 H1126 Q1134,208 1134,216 V304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#transferir-a)"/>
+<path d="M940,208 H812 Q804,208 804,200 V112" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#transferir-a)"/>
+<path d="M984,174 L984,112" fill="none" stroke="#4f5d75" stroke-width="1.3" stroke-dasharray="5,4" marker-end="url(#transferir-a)"/>
+<path d="M1194,308 L1194,112" fill="none" stroke="#0F4153" stroke-width="1.8" marker-end="url(#transferir-x)"/>
+<rect x="994.0" y="348.0" width="61.0" height="13" rx="2" fill="#f5f5f5"/>
+<text x="1000.0" y="358.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="start" font-family="'Geist Mono', monospace">RESULTADO</text>
+<rect x="1039.6" y="187.0" width="82.7" height="13" rx="2" fill="#f5f5f5"/>
+<text x="1081.0" y="197.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="middle" font-family="'Geist Mono', monospace">SÍ · ACREDITÓ</text>
+<rect x="860.6" y="187.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="872.0" y="197.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="middle" font-family="'Geist Mono', monospace">NO</text>
+<rect x="994.0" y="136.0" width="82.7" height="13" rx="2" fill="#f5f5f5"/>
+<text x="1000.0" y="146.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="start" font-family="'Geist Mono', monospace">SIN RESPUESTA</text>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.3"/>
+<text x="200" y="76" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Pide la transferencia</text>
+<text x="200" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">CBU · CVU · alias + monto</text>
+<rect x="180" y="44" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="188" y="54" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text>
+<rect x="368" y="180" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="368" y="180" width="152" height="56" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="380" y="204" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Valida destino y tope</text>
+<text x="380" y="221" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">titular · banco · límite</text>
+<rect x="360" y="172" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="368" y="182" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="560" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Reserva el dinero</text>
+<text x="560" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">se bloquea del saldo</text>
+<rect x="540" y="300" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="548" y="310" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text>
+<rect x="728" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="436" width="152" height="56" rx="6" fill="rgba(178,58,72,0.07)" stroke="#B23A48" stroke-width="1.3"/>
+<text x="740" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Envía al otro banco</text>
+<text x="740" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">y avisa el resultado</text>
+<rect x="720" y="428" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="728" y="438" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text>
+<polygon points="984,174 1028,208 984,242 940,208" fill="#f5f5f5"/>
+<polygon points="984,174 1028,208 984,242 940,208" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="984" y="205" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">¿El banco</text>
+<text x="984" y="218" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">acreditó?</text>
+<rect x="1012" y="166" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="1020" y="176" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text>
+<rect x="728" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="52" width="152" height="56" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.3"/>
+<text x="740" y="76" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve: Rechazada</text>
+<text x="740" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">el dinero vuelve al saldo</text>
+<rect x="908" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="908" y="52" width="152" height="56" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.3" stroke-dasharray="5,4"/>
+<text x="920" y="76" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve: En proceso</text>
+<text x="920" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">se resuelve en ≤ 60 s</text>
+<rect x="1088" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="1088" y="52" width="152" height="56" rx="6" fill="rgba(15,65,83,0.08)" stroke="#0F4153" stroke-width="1.8"/>
+<text x="1100" y="76" fill="#0F4153" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve: Enviada</text>
+<text x="1100" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">comprobante + aviso push</text>
+<rect x="1088" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="1088" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="1100" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Debita el dinero</text>
+<text x="1100" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">la reserva se confirma</text>
+<line x1="16" y1="552" x2="1248" y2="552" stroke="rgba(45,49,66,0.12)"/>
+<g font-family="'Geist Mono', monospace" font-size="9" letter-spacing="0.06em" fill="#4f5d75"><line x1="16" y1="576" x2="50" y2="576" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#transferir-a)"/><text x="60" y="579">PASO SIGUIENTE</text><line x1="180" y1="576" x2="214" y2="576" stroke="#4f5d75" stroke-width="1.3" stroke-dasharray="5,4" marker-end="url(#transferir-a)"/><text x="224" y="579">RESULTADO PROVISORIO</text><line x1="388" y1="576" x2="422" y2="576" stroke="#0F4153" stroke-width="1.8" marker-end="url(#transferir-x)"/><text x="432" y="579">CAMINO EXITOSO</text><polygon points="568,568 578,576 568,584 558,576" fill="rgba(15,65,83,0.07)" stroke="#0F4153"/><text x="588" y="579">DECISIÓN</text></g>
+</svg></div></figure>
+  <div class="cols">
+    <div><h3>Resultados posibles</h3><div class="table-wrap"><table>
+      <thead><tr><th>El usuario ve</th><th>Cuándo pasa</th><th>Qué pasa con el dinero</th></tr></thead>
+      <tbody><tr><td><span class="dot" style="background:#0F4153"></span><b>Enviada</b></td><td>El banco destino confirma la acreditación.</td><td>Se descuenta del saldo. El destinatario queda agendado.</td></tr><tr><td><span class="dot" style="background:#2D3142"></span><b>Rechazada</b></td><td>El banco destino o la red bancaria rechazan la operación.</td><td>La reserva se anula y el dinero vuelve al saldo.</td></tr><tr><td><span class="dot" style="border:1px dashed #2D3142"></span><b>En proceso</b></td><td>La red bancaria no responde a tiempo.</td><td>Sigue reservado. La billetera vuelve a consultar: si se acredita pasa a Enviada; si a los 60 s no se acreditó, se anula.</td></tr></tbody></table></div></div>
+    <div class="rules"><h3>Reglas de negocio</h3><ol><li>Antes de enviar se valida que el destino exista y que el monto no supere el <b>tope de transferencias a otros bancos</b>.</li><li>Si el procesador no autoriza la reserva (por ejemplo, saldo insuficiente), se rechaza sin llegar al banco.</li><li>Si el destino es otra billetera SUBE, la transferencia es inmediata y no pasa por la red bancaria.</li><li>Al quedar Enviada se notifica a quien envía y, si el destino es SUBE, también a quien recibe.</li></ol></div>
+  </div>
+</section>
+<section class="flow" id="recibir">
+  <p class="eyebrow">Caso 2 · Dinero que entra</p>
+  <h2>Recibir dinero de otro banco</h2>
+  <p class="summary">Alguien transfiere al CVU SUBE del usuario desde otro banco o billetera. La red bancaria avisa a la billetera, que verifica que la cuenta y el titular coincidan y pide al procesador acreditar el dinero.</p>
+  <dl class="meta">
+    <div><dt>Empieza cuando</dt><dd>Llega una transferencia al CVU del usuario</dd></div>
+    <div><dt>Termina en</dt><dd>Dinero acreditado, o ingreso no acreditado</dd></div>
+    <div class="wide"><dt>Participan</dt><dd class="chips"><span class="chip" style="--c:#2D3142"><i></i>Usuario<small>App Mi SUBE</small></span><span class="chip" style="--c:#0F4153"><i></i>Billetera Sube<small>NSSA</small></span><span class="chip" style="--c:#FFA945"><i></i>Procesador<small>Pismo · saldo</small></span><span class="chip" style="--c:#B23A48"><i></i>Red Bancaria<small>BNA / Coelsa</small></span></dd></div>
+  </dl>
+  <figure><div class="scroll"><svg viewBox="0 0 904 600" style="min-width:723px" role="img" aria-labelledby="recibir-title recibir-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="recibir-title">Recibir dinero de otro banco</title>
+<desc id="recibir-desc">Alguien transfiere al CVU SUBE del usuario desde otro banco o billetera. La red bancaria avisa a la billetera, que verifica que la cuenta y </desc>
+<defs><marker id="recibir-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="recibir-x" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker></defs>
+<rect x="0" y="0" width="904" height="600" fill="#f5f5f5"/>
+<rect x="16" y="16" width="872" height="128" fill="rgba(255,255,255,0.55)"/>
+<rect x="16" y="16" width="4" height="128" fill="#2D3142"/>
+<text x="32" y="74" fill="#2d3142" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">USUARIO</text>
+<text x="32" y="90" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">App Mi SUBE</text>
+<rect x="16" y="144" width="872" height="128" fill="rgba(15,65,83,0.035)"/>
+<line x1="16" y1="144" x2="888" y2="144" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="144" width="4" height="128" fill="#0F4153"/>
+<text x="32" y="202" fill="#0F4153" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">BILLETERA SUBE</text>
+<text x="32" y="218" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">NSSA</text>
+<rect x="16" y="272" width="872" height="128" fill="rgba(255,169,69,0.06)"/>
+<line x1="16" y1="272" x2="888" y2="272" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="272" width="4" height="128" fill="#FFA945"/>
+<text x="32" y="330" fill="#9a5a10" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">PROCESADOR</text>
+<text x="32" y="346" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">Pismo · saldo</text>
+<rect x="16" y="400" width="872" height="128" fill="rgba(178,58,72,0.035)"/>
+<line x1="16" y1="400" x2="888" y2="400" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="400" width="4" height="128" fill="#B23A48"/>
+<text x="32" y="458" fill="#B23A48" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">RED BANCARIA</text>
+<text x="32" y="474" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">BNA / Coelsa</text>
+<rect x="16" y="16" width="872" height="512" fill="none" stroke="rgba(45,49,66,0.18)"/>
+<line x1="168" y1="16" x2="168" y2="528" stroke="rgba(45,49,66,0.12)"/>
+<path d="M264,436 L264,240" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#recibir-a)"/>
+<path d="M340,208 L396,208" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#recibir-a)"/>
+<path d="M488,208 L544,208" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#recibir-a)"/>
+<path d="M444,242 L444,304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#recibir-a)"/>
+<path d="M520,336 H796 Q804,336 804,328 V112" fill="none" stroke="#0F4153" stroke-width="1.8" marker-end="url(#recibir-x)"/>
+<rect x="504.6" y="187.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="516.0" y="197.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="middle" font-family="'Geist Mono', monospace">NO</text>
+<rect x="454.0" y="266.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="460.0" y="276.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="start" font-family="'Geist Mono', monospace">SÍ</text>
+<rect x="188" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="188" y="436" width="152" height="56" rx="6" fill="rgba(178,58,72,0.07)" stroke="#B23A48" stroke-width="1.3"/>
+<text x="200" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Llega una transferencia</text>
+<text x="200" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">desde un CBU o CVU</text>
+<rect x="180" y="428" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="188" y="438" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text>
+<rect x="188" y="180" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="188" y="180" width="152" height="56" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="200" y="204" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Recibe el aviso</text>
+<text x="200" y="221" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">sin duplicados</text>
+<rect x="180" y="172" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="188" y="182" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text>
+<polygon points="444,174 488,208 444,242 400,208" fill="#f5f5f5"/>
+<polygon points="444,174 488,208 444,242 400,208" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="444" y="205" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">¿Cuenta y</text>
+<text x="444" y="218" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">titular ok?</text>
+<rect x="472" y="166" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="480" y="176" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text>
+<rect x="548" y="180" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="548" y="180" width="152" height="56" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3" stroke-dasharray="5,4"/>
+<text x="560" y="204" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">No se acredita</text>
+<text x="560" y="221" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">el aviso se descarta</text>
+<rect x="368" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="368" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="380" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Acredita el dinero</text>
+<text x="380" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">suma al saldo</text>
+<rect x="360" y="300" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="368" y="310" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text>
+<rect x="728" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="52" width="152" height="56" rx="6" fill="rgba(15,65,83,0.08)" stroke="#0F4153" stroke-width="1.8"/>
+<text x="740" y="76" fill="#0F4153" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve el ingreso</text>
+<text x="740" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">aviso push + movimiento</text>
+<line x1="16" y1="552" x2="888" y2="552" stroke="rgba(45,49,66,0.12)"/>
+<g font-family="'Geist Mono', monospace" font-size="9" letter-spacing="0.06em" fill="#4f5d75"><line x1="16" y1="576" x2="50" y2="576" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#recibir-a)"/><text x="60" y="579">PASO SIGUIENTE</text><line x1="180" y1="576" x2="214" y2="576" stroke="#4f5d75" stroke-width="1.3" stroke-dasharray="5,4" marker-end="url(#recibir-a)"/><text x="224" y="579">RESULTADO PROVISORIO</text><line x1="388" y1="576" x2="422" y2="576" stroke="#0F4153" stroke-width="1.8" marker-end="url(#recibir-x)"/><text x="432" y="579">CAMINO EXITOSO</text><polygon points="568,568 578,576 568,584 558,576" fill="rgba(15,65,83,0.07)" stroke="#0F4153"/><text x="588" y="579">DECISIÓN</text></g>
+</svg></div></figure>
+  <div class="cols">
+    <div><h3>Resultados posibles</h3><div class="table-wrap"><table>
+      <thead><tr><th>El usuario ve</th><th>Cuándo pasa</th><th>Qué pasa con el dinero</th></tr></thead>
+      <tbody><tr><td><span class="dot" style="background:#0F4153"></span><b>Ve el ingreso</b></td><td>El CVU existe y el CUIT del aviso coincide con el titular.</td><td>Queda disponible en el saldo. Recibe “Transferencia recibida”.</td></tr><tr><td><span class="dot" style="border:1px dashed #2D3142"></span><b>No se acredita</b></td><td>El CVU no corresponde a una billetera o el CUIT no coincide.</td><td>No ingresa a la billetera.</td></tr></tbody></table></div></div>
+    <div class="rules"><h3>Reglas de negocio</h3><ol><li>Cada aviso de la red bancaria se procesa <b>una sola vez</b>: un aviso repetido no duplica el crédito.</li><li>Solo se acredita si el CUIT del aviso coincide con el titular de la billetera.</li><li>Si el procesador confirma más tarde, el ingreso queda registrado y se completa de forma asíncrona.</li><li>Ante una falla temporal, el aviso se reintenta automáticamente.</li></ol></div>
+  </div>
+</section>
+<section class="flow" id="qr">
+  <p class="eyebrow">Caso 3 · A · Viajar con QR</p>
+  <h2>Generar el QR para viajar</h2>
+  <p class="summary">Antes de subir al transporte, el usuario pide un QR. La billetera revisa que tenga saldo y que no tenga deudas de viaje ni bloqueos; si está habilitado, el sistema QR genera un código de uso inmediato.</p>
+  <dl class="meta">
+    <div><dt>Empieza cuando</dt><dd>El usuario toca “Viajar con QR” en la app</dd></div>
+    <div><dt>Termina en</dt><dd>QR para mostrar en el validador, o rechazo</dd></div>
+    <div class="wide"><dt>Participan</dt><dd class="chips"><span class="chip" style="--c:#2D3142"><i></i>Usuario<small>App Mi SUBE</small></span><span class="chip" style="--c:#0F4153"><i></i>Billetera Sube<small>NSSA</small></span><span class="chip" style="--c:#FFA945"><i></i>Procesador<small>Pismo · saldo</small></span><span class="chip" style="--c:#0097C4"><i></i>Sistema Qr<small>VQR · transporte</small></span></dd></div>
+  </dl>
+  <figure><div class="scroll"><svg viewBox="0 0 1264 600" style="min-width:1011px" role="img" aria-labelledby="qr-title qr-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="qr-title">Generar el QR para viajar</title>
+<desc id="qr-desc">Antes de subir al transporte, el usuario pide un QR. La billetera revisa que tenga saldo y que no tenga deudas de viaje ni bloqueos; si está</desc>
+<defs><marker id="qr-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="qr-x" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker></defs>
+<rect x="0" y="0" width="1264" height="600" fill="#f5f5f5"/>
+<rect x="16" y="16" width="1232" height="128" fill="rgba(255,255,255,0.55)"/>
+<rect x="16" y="16" width="4" height="128" fill="#2D3142"/>
+<text x="32" y="74" fill="#2d3142" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">USUARIO</text>
+<text x="32" y="90" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">App Mi SUBE</text>
+<rect x="16" y="144" width="1232" height="128" fill="rgba(15,65,83,0.035)"/>
+<line x1="16" y1="144" x2="1248" y2="144" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="144" width="4" height="128" fill="#0F4153"/>
+<text x="32" y="202" fill="#0F4153" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">BILLETERA SUBE</text>
+<text x="32" y="218" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">NSSA</text>
+<rect x="16" y="272" width="1232" height="128" fill="rgba(255,169,69,0.06)"/>
+<line x1="16" y1="272" x2="1248" y2="272" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="272" width="4" height="128" fill="#FFA945"/>
+<text x="32" y="330" fill="#9a5a10" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">PROCESADOR</text>
+<text x="32" y="346" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">Pismo · saldo</text>
+<rect x="16" y="400" width="1232" height="128" fill="rgba(0,151,196,0.04)"/>
+<line x1="16" y1="400" x2="1248" y2="400" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="400" width="4" height="128" fill="#0097C4"/>
+<text x="32" y="458" fill="#007a9f" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">SISTEMA QR</text>
+<text x="32" y="474" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">VQR · transporte</text>
+<rect x="16" y="16" width="1232" height="512" fill="none" stroke="rgba(45,49,66,0.18)"/>
+<line x1="168" y1="16" x2="168" y2="528" stroke="rgba(45,49,66,0.12)"/>
+<path d="M340,80 H436 Q444,80 444,88 V304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#qr-a)"/>
+<path d="M520,336 H616 Q624,336 624,344 V432" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#qr-a)"/>
+<path d="M700,464 H796 Q804,464 804,456 V246" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#qr-a)"/>
+<path d="M804,174 L804,112" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#qr-a)"/>
+<path d="M848,208 H976 Q984,208 984,216 V432" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#qr-a)"/>
+<path d="M1060,464 H1156 Q1164,464 1164,456 V112" fill="none" stroke="#0F4153" stroke-width="1.8" marker-end="url(#qr-x)"/>
+<rect x="814.0" y="136.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="820.0" y="146.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="start" font-family="'Geist Mono', monospace">NO</text>
+<rect x="904.6" y="187.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="916.0" y="197.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="middle" font-family="'Geist Mono', monospace">SÍ</text>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.3"/>
+<text x="200" y="76" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Pide el QR</text>
+<text x="200" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">para viajar ahora</text>
+<rect x="180" y="44" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="188" y="54" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text>
+<rect x="368" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="368" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="380" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Informa el saldo</text>
+<text x="380" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">saldo disponible</text>
+<rect x="360" y="300" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="368" y="310" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text>
+<rect x="548" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="548" y="436" width="152" height="56" rx="6" fill="rgba(0,151,196,0.08)" stroke="#0097C4" stroke-width="1.3"/>
+<text x="560" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Informa deuda</text>
+<text x="560" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">deuda de viajes · bloqueo</text>
+<rect x="540" y="428" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="548" y="438" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text>
+<polygon points="804,174 848,208 804,242 760,208" fill="#f5f5f5"/>
+<polygon points="804,174 848,208 804,242 760,208" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="804" y="205" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">¿Puede</text>
+<text x="804" y="218" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">viajar?</text>
+<rect x="832" y="166" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="840" y="176" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text>
+<rect x="728" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="52" width="152" height="56" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.3"/>
+<text x="740" y="76" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve: no puede viajar</text>
+<text x="740" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">sin saldo o con deuda</text>
+<rect x="908" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="908" y="436" width="152" height="56" rx="6" fill="rgba(0,151,196,0.08)" stroke="#0097C4" stroke-width="1.3"/>
+<text x="920" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Genera el QR</text>
+<text x="920" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">uso inmediato</text>
+<rect x="900" y="428" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="908" y="438" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text>
+<rect x="1088" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="1088" y="52" width="152" height="56" rx="6" fill="rgba(15,65,83,0.08)" stroke="#0F4153" stroke-width="1.8"/>
+<text x="1100" y="76" fill="#0F4153" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve el QR</text>
+<text x="1100" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">válido por 90 s</text>
+<line x1="16" y1="552" x2="1248" y2="552" stroke="rgba(45,49,66,0.12)"/>
+<g font-family="'Geist Mono', monospace" font-size="9" letter-spacing="0.06em" fill="#4f5d75"><line x1="16" y1="576" x2="50" y2="576" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#qr-a)"/><text x="60" y="579">PASO SIGUIENTE</text><line x1="180" y1="576" x2="214" y2="576" stroke="#4f5d75" stroke-width="1.3" stroke-dasharray="5,4" marker-end="url(#qr-a)"/><text x="224" y="579">RESULTADO PROVISORIO</text><line x1="388" y1="576" x2="422" y2="576" stroke="#0F4153" stroke-width="1.8" marker-end="url(#qr-x)"/><text x="432" y="579">CAMINO EXITOSO</text><polygon points="568,568 578,576 568,584 558,576" fill="rgba(15,65,83,0.07)" stroke="#0F4153"/><text x="588" y="579">DECISIÓN</text></g>
+</svg></div></figure>
+  <div class="cols">
+    <div><h3>Resultados posibles</h3><div class="table-wrap"><table>
+      <thead><tr><th>El usuario ve</th><th>Cuándo pasa</th><th>Qué pasa con el dinero</th></tr></thead>
+      <tbody><tr><td><span class="dot" style="background:#0F4153"></span><b>Ve el QR</b></td><td>Tiene saldo y no tiene deuda ni bloqueo (o pagó su deuda hace menos de 2 h).</td><td>Todavía no se cobra nada: el viaje se cobra al validar.</td></tr><tr><td><span class="dot" style="background:#2D3142"></span><b>No puede viajar</b></td><td>Saldo en cero, deuda de viajes pendiente o cuenta bloqueada.</td><td>Nada. Puede cargar saldo o saldar la deuda (caso 3 · C).</td></tr></tbody></table></div></div>
+    <div class="rules"><h3>Reglas de negocio</h3><ol><li>El QR vence a los <b>90 segundos</b>; si no se usa, hay que pedir otro.</li><li>Hace falta saldo mayor a cero.</li><li>Con deuda de viajes o en lista de bloqueo no se genera el QR.</li><li>Si pagó la deuda hace menos de 2 horas se habilita igual, aunque el sistema QR todavía no lo refleje.</li></ol></div>
+  </div>
+</section>
+<section class="flow" id="viaje">
+  <p class="eyebrow">Caso 3 · B · Viajar con QR</p>
+  <h2>Pagar el viaje</h2>
+  <p class="summary">Cuando el validador lee el QR, el sistema QR informa el viaje y su tarifa. La billetera cobra la tarifa del saldo; si no alcanza, cobra lo disponible y el resto queda como deuda de viajes.</p>
+  <dl class="meta">
+    <div><dt>Empieza cuando</dt><dd>El validador del colectivo, tren o subte lee el QR</dd></div>
+    <div><dt>Termina en</dt><dd>Viaje pagado, o viaje con deuda</dd></div>
+    <div class="wide"><dt>Participan</dt><dd class="chips"><span class="chip" style="--c:#2D3142"><i></i>Usuario<small>App Mi SUBE</small></span><span class="chip" style="--c:#0F4153"><i></i>Billetera Sube<small>NSSA</small></span><span class="chip" style="--c:#FFA945"><i></i>Procesador<small>Pismo · saldo</small></span><span class="chip" style="--c:#0097C4"><i></i>Sistema Qr<small>VQR · transporte</small></span></dd></div>
+  </dl>
+  <figure><div class="scroll"><svg viewBox="0 0 1264 600" style="min-width:1011px" role="img" aria-labelledby="viaje-title viaje-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="viaje-title">Pagar el viaje</title>
+<desc id="viaje-desc">Cuando el validador lee el QR, el sistema QR informa el viaje y su tarifa. La billetera cobra la tarifa del saldo; si no alcanza, cobra lo d</desc>
+<defs><marker id="viaje-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="viaje-x" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker></defs>
+<rect x="0" y="0" width="1264" height="600" fill="#f5f5f5"/>
+<rect x="16" y="16" width="1232" height="128" fill="rgba(255,255,255,0.55)"/>
+<rect x="16" y="16" width="4" height="128" fill="#2D3142"/>
+<text x="32" y="74" fill="#2d3142" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">USUARIO</text>
+<text x="32" y="90" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">App Mi SUBE</text>
+<rect x="16" y="144" width="1232" height="128" fill="rgba(15,65,83,0.035)"/>
+<line x1="16" y1="144" x2="1248" y2="144" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="144" width="4" height="128" fill="#0F4153"/>
+<text x="32" y="202" fill="#0F4153" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">BILLETERA SUBE</text>
+<text x="32" y="218" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">NSSA</text>
+<rect x="16" y="272" width="1232" height="128" fill="rgba(255,169,69,0.06)"/>
+<line x1="16" y1="272" x2="1248" y2="272" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="272" width="4" height="128" fill="#FFA945"/>
+<text x="32" y="330" fill="#9a5a10" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">PROCESADOR</text>
+<text x="32" y="346" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">Pismo · saldo</text>
+<rect x="16" y="400" width="1232" height="128" fill="rgba(0,151,196,0.04)"/>
+<line x1="16" y1="400" x2="1248" y2="400" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="400" width="4" height="128" fill="#0097C4"/>
+<text x="32" y="458" fill="#007a9f" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">SISTEMA QR</text>
+<text x="32" y="474" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">VQR · transporte</text>
+<rect x="16" y="16" width="1232" height="512" fill="none" stroke="rgba(45,49,66,0.18)"/>
+<line x1="168" y1="16" x2="168" y2="528" stroke="rgba(45,49,66,0.12)"/>
+<path d="M264,108 V456 Q264,464 272,464 H364" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#viaje-a)"/>
+<path d="M444,436 V216 Q444,208 452,208 H576" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#viaje-a)"/>
+<path d="M668,208 H796 Q804,208 804,216 V304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#viaje-a)"/>
+<path d="M880,336 H976 Q984,336 984,344 V432" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#viaje-a)"/>
+<path d="M1060,464 H1156 Q1164,464 1164,456 V112" fill="none" stroke="#0F4153" stroke-width="1.8" marker-end="url(#viaje-x)"/>
+<path d="M624,242 L624,304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#viaje-a)"/>
+<path d="M624,364 L624,432" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#viaje-a)"/>
+<rect x="724.6" y="187.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="736.0" y="197.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="middle" font-family="'Geist Mono', monospace">SÍ</text>
+<rect x="634.0" y="266.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="640.0" y="276.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="start" font-family="'Geist Mono', monospace">NO</text>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.3"/>
+<text x="200" y="76" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Muestra el QR</text>
+<text x="200" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">en el validador</text>
+<rect x="180" y="44" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="188" y="54" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text>
+<rect x="368" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="368" y="436" width="152" height="56" rx="6" fill="rgba(0,151,196,0.08)" stroke="#0097C4" stroke-width="1.3"/>
+<text x="380" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Informa el viaje</text>
+<text x="380" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">tarifa · línea · hora</text>
+<rect x="360" y="428" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="368" y="438" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text>
+<polygon points="624,174 668,208 624,242 580,208" fill="#f5f5f5"/>
+<polygon points="624,174 668,208 624,242 580,208" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="624" y="205" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">¿Alcanza el</text>
+<text x="624" y="218" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">saldo?</text>
+<rect x="652" y="166" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="660" y="176" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text>
+<rect x="728" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="740" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Cobra la tarifa</text>
+<text x="740" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">a la cuenta de NSSA</text>
+<rect x="720" y="300" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="728" y="310" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text>
+<rect x="908" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="908" y="436" width="152" height="56" rx="6" fill="rgba(0,151,196,0.08)" stroke="#0097C4" stroke-width="1.3"/>
+<text x="920" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Aprueba el viaje</text>
+<text x="920" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">viaje pagado</text>
+<rect x="1088" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="1088" y="52" width="152" height="56" rx="6" fill="rgba(15,65,83,0.08)" stroke="#0F4153" stroke-width="1.8"/>
+<text x="1100" y="76" fill="#0F4153" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve: viaje pagado</text>
+<text x="1100" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">aviso push</text>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="560" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Cobra lo disponible</text>
+<text x="560" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">el resto queda en deuda</text>
+<rect x="548" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="548" y="436" width="152" height="56" rx="6" fill="rgba(0,151,196,0.08)" stroke="#0097C4" stroke-width="1.3" stroke-dasharray="5,4"/>
+<text x="560" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Rechaza el viaje</text>
+<text x="560" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">queda deuda registrada</text>
+<line x1="16" y1="552" x2="1248" y2="552" stroke="rgba(45,49,66,0.12)"/>
+<g font-family="'Geist Mono', monospace" font-size="9" letter-spacing="0.06em" fill="#4f5d75"><line x1="16" y1="576" x2="50" y2="576" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#viaje-a)"/><text x="60" y="579">PASO SIGUIENTE</text><line x1="180" y1="576" x2="214" y2="576" stroke="#4f5d75" stroke-width="1.3" stroke-dasharray="5,4" marker-end="url(#viaje-a)"/><text x="224" y="579">RESULTADO PROVISORIO</text><line x1="388" y1="576" x2="422" y2="576" stroke="#0F4153" stroke-width="1.8" marker-end="url(#viaje-x)"/><text x="432" y="579">CAMINO EXITOSO</text><polygon points="568,568 578,576 568,584 558,576" fill="rgba(15,65,83,0.07)" stroke="#0F4153"/><text x="588" y="579">DECISIÓN</text></g>
+</svg></div></figure>
+  <div class="cols">
+    <div><h3>Resultados posibles</h3><div class="table-wrap"><table>
+      <thead><tr><th>El usuario ve</th><th>Cuándo pasa</th><th>Qué pasa con el dinero</th></tr></thead>
+      <tbody><tr><td><span class="dot" style="background:#0F4153"></span><b>Viaje pagado</b></td><td>El saldo alcanza para la tarifa.</td><td>Se descuenta la tarifa y se acredita en la cuenta recaudadora de NSSA.</td></tr><tr><td><span class="dot" style="border:1px dashed #2D3142"></span><b>Viaje con deuda</b></td><td>El saldo no alcanza para la tarifa.</td><td>Se cobra lo disponible y la diferencia queda como deuda de viajes.</td></tr></tbody></table></div></div>
+    <div class="rules"><h3>Reglas de negocio</h3><ol><li>Cada viaje se cobra <b>una sola vez</b>: si el sistema QR lo informa de nuevo, se rechaza.</li><li>Mientras haya deuda de viajes no se pueden generar nuevos QR (caso 3 · A).</li><li>Si el sistema QR vuelve a informar un viaje con deuda, la billetera intenta cobrarla automáticamente.</li></ol></div>
+  </div>
+</section>
+<section class="flow" id="deuda">
+  <p class="eyebrow">Caso 3 · C · Viajar con QR</p>
+  <h2>Saldar la deuda de viajes</h2>
+  <p class="summary">El usuario paga lo que debe de viajes anteriores. La billetera calcula el total, reserva el monto, lo informa al sistema QR y, si este lo acepta, confirma el débito.</p>
+  <dl class="meta">
+    <div><dt>Empieza cuando</dt><dd>El usuario toca “Pagar deuda” en la app</dd></div>
+    <div><dt>Termina en</dt><dd>Deuda saldada, o reintentar</dd></div>
+    <div class="wide"><dt>Participan</dt><dd class="chips"><span class="chip" style="--c:#2D3142"><i></i>Usuario<small>App Mi SUBE</small></span><span class="chip" style="--c:#0F4153"><i></i>Billetera Sube<small>NSSA</small></span><span class="chip" style="--c:#FFA945"><i></i>Procesador<small>Pismo · saldo</small></span><span class="chip" style="--c:#0097C4"><i></i>Sistema Qr<small>VQR · transporte</small></span></dd></div>
+  </dl>
+  <figure><div class="scroll"><svg viewBox="0 0 1264 600" style="min-width:1011px" role="img" aria-labelledby="deuda-title deuda-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="deuda-title">Saldar la deuda de viajes</title>
+<desc id="deuda-desc">El usuario paga lo que debe de viajes anteriores. La billetera calcula el total, reserva el monto, lo informa al sistema QR y, si este lo ac</desc>
+<defs><marker id="deuda-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="deuda-x" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker></defs>
+<rect x="0" y="0" width="1264" height="600" fill="#f5f5f5"/>
+<rect x="16" y="16" width="1232" height="128" fill="rgba(255,255,255,0.55)"/>
+<rect x="16" y="16" width="4" height="128" fill="#2D3142"/>
+<text x="32" y="74" fill="#2d3142" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">USUARIO</text>
+<text x="32" y="90" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">App Mi SUBE</text>
+<rect x="16" y="144" width="1232" height="128" fill="rgba(15,65,83,0.035)"/>
+<line x1="16" y1="144" x2="1248" y2="144" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="144" width="4" height="128" fill="#0F4153"/>
+<text x="32" y="202" fill="#0F4153" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">BILLETERA SUBE</text>
+<text x="32" y="218" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">NSSA</text>
+<rect x="16" y="272" width="1232" height="128" fill="rgba(255,169,69,0.06)"/>
+<line x1="16" y1="272" x2="1248" y2="272" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="272" width="4" height="128" fill="#FFA945"/>
+<text x="32" y="330" fill="#9a5a10" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">PROCESADOR</text>
+<text x="32" y="346" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">Pismo · saldo</text>
+<rect x="16" y="400" width="1232" height="128" fill="rgba(0,151,196,0.04)"/>
+<line x1="16" y1="400" x2="1248" y2="400" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="400" width="4" height="128" fill="#0097C4"/>
+<text x="32" y="458" fill="#007a9f" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">SISTEMA QR</text>
+<text x="32" y="474" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">VQR · transporte</text>
+<rect x="16" y="16" width="1232" height="512" fill="none" stroke="rgba(45,49,66,0.18)"/>
+<line x1="168" y1="16" x2="168" y2="528" stroke="rgba(45,49,66,0.12)"/>
+<path d="M340,80 H436 Q444,80 444,88 V176" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#deuda-a)"/>
+<path d="M520,208 H616 Q624,208 624,216 V304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#deuda-a)"/>
+<path d="M700,336 H796 Q804,336 804,344 V432" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#deuda-a)"/>
+<path d="M880,464 H976 Q984,464 984,456 V246" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#deuda-a)"/>
+<path d="M984,174 L984,112" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#deuda-a)"/>
+<path d="M1028,208 H1126 Q1134,208 1134,216 V304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#deuda-a)"/>
+<path d="M1194,308 L1194,112" fill="none" stroke="#0F4153" stroke-width="1.8" marker-end="url(#deuda-x)"/>
+<rect x="994.0" y="348.0" width="61.0" height="13" rx="2" fill="#f5f5f5"/>
+<text x="1000.0" y="358.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="start" font-family="'Geist Mono', monospace">RESPUESTA</text>
+<rect x="994.0" y="136.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="1000.0" y="146.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="start" font-family="'Geist Mono', monospace">NO</text>
+<rect x="1069.6" y="187.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="1081.0" y="197.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="middle" font-family="'Geist Mono', monospace">SÍ</text>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.3"/>
+<text x="200" y="76" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Pide pagar la deuda</text>
+<text x="200" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">desde la app</text>
+<rect x="180" y="44" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="188" y="54" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text>
+<rect x="368" y="180" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="368" y="180" width="152" height="56" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="380" y="204" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Calcula el total</text>
+<text x="380" y="221" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">suma de viajes adeudados</text>
+<rect x="360" y="172" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="368" y="182" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="560" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Reserva el monto</text>
+<text x="560" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">si el saldo alcanza</text>
+<rect x="540" y="300" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="548" y="310" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text>
+<rect x="728" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="436" width="152" height="56" rx="6" fill="rgba(0,151,196,0.08)" stroke="#0097C4" stroke-width="1.3"/>
+<text x="740" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Registra el pago</text>
+<text x="740" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">libera la cuenta</text>
+<rect x="720" y="428" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="728" y="438" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text>
+<polygon points="984,174 1028,208 984,242 940,208" fill="#f5f5f5"/>
+<polygon points="984,174 1028,208 984,242 940,208" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="984" y="205" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">¿Pago</text>
+<text x="984" y="218" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">aceptado?</text>
+<rect x="1012" y="166" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="1020" y="176" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text>
+<rect x="908" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="908" y="52" width="152" height="56" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.3"/>
+<text x="920" y="76" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve: reintentar</text>
+<text x="920" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">la reserva se anula</text>
+<rect x="1088" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="1088" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="1100" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Debita el monto</text>
+<text x="1100" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">la reserva se confirma</text>
+<rect x="1088" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="1088" y="52" width="152" height="56" rx="6" fill="rgba(15,65,83,0.08)" stroke="#0F4153" stroke-width="1.8"/>
+<text x="1100" y="76" fill="#0F4153" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve: deuda saldada</text>
+<text x="1100" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">puede volver a viajar</text>
+<line x1="16" y1="552" x2="1248" y2="552" stroke="rgba(45,49,66,0.12)"/>
+<g font-family="'Geist Mono', monospace" font-size="9" letter-spacing="0.06em" fill="#4f5d75"><line x1="16" y1="576" x2="50" y2="576" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#deuda-a)"/><text x="60" y="579">PASO SIGUIENTE</text><line x1="180" y1="576" x2="214" y2="576" stroke="#4f5d75" stroke-width="1.3" stroke-dasharray="5,4" marker-end="url(#deuda-a)"/><text x="224" y="579">RESULTADO PROVISORIO</text><line x1="388" y1="576" x2="422" y2="576" stroke="#0F4153" stroke-width="1.8" marker-end="url(#deuda-x)"/><text x="432" y="579">CAMINO EXITOSO</text><polygon points="568,568 578,576 568,584 558,576" fill="rgba(15,65,83,0.07)" stroke="#0F4153"/><text x="588" y="579">DECISIÓN</text></g>
+</svg></div></figure>
+  <div class="cols">
+    <div><h3>Resultados posibles</h3><div class="table-wrap"><table>
+      <thead><tr><th>El usuario ve</th><th>Cuándo pasa</th><th>Qué pasa con el dinero</th></tr></thead>
+      <tbody><tr><td><span class="dot" style="background:#0F4153"></span><b>Deuda saldada</b></td><td>El sistema QR acepta el pago.</td><td>Se debita el total de la deuda. Puede generar QR de nuevo.</td></tr><tr><td><span class="dot" style="background:#2D3142"></span><b>Reintentar</b></td><td>El sistema QR no acepta el pago o no responde.</td><td>La reserva se anula y el dinero vuelve al saldo.</td></tr><tr><td><span class="dot" style="border:1px dashed #2D3142"></span><b>Sin cambios</b></td><td>No tiene deuda activa, o el saldo no alcanza.</td><td>Nada: se informa el motivo.</td></tr></tbody></table></div></div>
+    <div class="rules"><h3>Reglas de negocio</h3><ol><li>Se paga <b>el total</b> de la deuda en una sola operación; el saldo tiene que superar ese total.</li><li>No se permite un segundo pago mientras hay uno en proceso.</li><li>El mismo proceso se dispara solo cuando el sistema QR reinforma un viaje con deuda (caso 3 · B).</li></ol></div>
+  </div>
+</section>
+<section class="flow" id="alta">
+  <p class="eyebrow">Caso 4 · Alta de cuenta y tarjeta</p>
+  <h2>Alta de la billetera</h2>
+  <p class="summary">Cuando una persona se registra en Mi SUBE, la billetera se crea sola: se da de alta el CVU en la red bancaria, se abre la cuenta en el procesador y se activa. Después se asignan el alias y el perfil fiscal, y se emite la tarjeta (caso 5).</p>
+  <dl class="meta">
+    <div><dt>Empieza cuando</dt><dd>Alta de usuario en Mi SUBE</dd></div>
+    <div><dt>Termina en</dt><dd>Billetera activa con CVU, alias y perfil fiscal</dd></div>
+    <div class="wide"><dt>Participan</dt><dd class="chips"><span class="chip" style="--c:#2D3142"><i></i>Usuario<small>App Mi SUBE</small></span><span class="chip" style="--c:#0F4153"><i></i>Billetera Sube<small>NSSA</small></span><span class="chip" style="--c:#FFA945"><i></i>Procesador<small>Pismo · saldo</small></span><span class="chip" style="--c:#B23A48"><i></i>Red Bancaria<small>BNA / Coelsa</small></span><span class="chip" style="--c:#8A6D3B"><i></i>Organismo Fiscal<small>AFIP</small></span></dd></div>
+  </dl>
+  <figure><div class="scroll"><svg viewBox="0 0 1264 728" style="min-width:1011px" role="img" aria-labelledby="alta-title alta-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="alta-title">Alta de la billetera</title>
+<desc id="alta-desc">Cuando una persona se registra en Mi SUBE, la billetera se crea sola: se da de alta el CVU en la red bancaria, se abre la cuenta en el proce</desc>
+<defs><marker id="alta-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="alta-x" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker></defs>
+<rect x="0" y="0" width="1264" height="728" fill="#f5f5f5"/>
+<rect x="16" y="16" width="1232" height="128" fill="rgba(255,255,255,0.55)"/>
+<rect x="16" y="16" width="4" height="128" fill="#2D3142"/>
+<text x="32" y="74" fill="#2d3142" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">USUARIO</text>
+<text x="32" y="90" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">App Mi SUBE</text>
+<rect x="16" y="144" width="1232" height="128" fill="rgba(15,65,83,0.035)"/>
+<line x1="16" y1="144" x2="1248" y2="144" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="144" width="4" height="128" fill="#0F4153"/>
+<text x="32" y="202" fill="#0F4153" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">BILLETERA SUBE</text>
+<text x="32" y="218" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">NSSA</text>
+<rect x="16" y="272" width="1232" height="128" fill="rgba(255,169,69,0.06)"/>
+<line x1="16" y1="272" x2="1248" y2="272" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="272" width="4" height="128" fill="#FFA945"/>
+<text x="32" y="330" fill="#9a5a10" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">PROCESADOR</text>
+<text x="32" y="346" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">Pismo · saldo</text>
+<rect x="16" y="400" width="1232" height="128" fill="rgba(178,58,72,0.035)"/>
+<line x1="16" y1="400" x2="1248" y2="400" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="400" width="4" height="128" fill="#B23A48"/>
+<text x="32" y="458" fill="#B23A48" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">RED BANCARIA</text>
+<text x="32" y="474" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">BNA / Coelsa</text>
+<rect x="16" y="528" width="1232" height="128" fill="rgba(138,109,59,0.045)"/>
+<line x1="16" y1="528" x2="1248" y2="528" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="528" width="4" height="128" fill="#8A6D3B"/>
+<text x="32" y="586" fill="#8A6D3B" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">ORGANISMO FISCAL</text>
+<text x="32" y="602" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">AFIP</text>
+<rect x="16" y="16" width="1232" height="640" fill="none" stroke="rgba(45,49,66,0.18)"/>
+<line x1="168" y1="16" x2="168" y2="656" stroke="rgba(45,49,66,0.12)"/>
+<path d="M340,80 H436 Q444,80 444,88 V432" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#alta-a)"/>
+<path d="M520,464 H616 Q624,464 624,456 V368" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#alta-a)"/>
+<path d="M700,336 H766 Q774,336 774,328 V240" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#alta-a)"/>
+<path d="M804,180 L804,112" fill="none" stroke="#0F4153" stroke-width="1.8" marker-end="url(#alta-x)"/>
+<path d="M834,236 L834,560" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#alta-a)"/>
+<path d="M880,592 H976 Q984,592 984,584 V368" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#alta-a)"/>
+<path d="M880,208 H1156 Q1164,208 1164,216 V432" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#alta-a)"/>
+<rect x="844.0" y="391.0" width="55.5" height="13" rx="2" fill="#f5f5f5"/>
+<text x="850.0" y="401.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="start" font-family="'Geist Mono', monospace">CONSULTA</text>
+<rect x="986.1" y="187.0" width="71.8" height="13" rx="2" fill="#f5f5f5"/>
+<text x="1022.0" y="197.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="middle" font-family="'Geist Mono', monospace">EN PARALELO</text>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="188" y="52" width="152" height="56" rx="6" fill="#ffffff" stroke="#2D3142" stroke-width="1.3"/>
+<text x="200" y="76" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Se registra</text>
+<text x="200" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">en Mi SUBE</text>
+<rect x="180" y="44" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="188" y="54" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text>
+<rect x="368" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="368" y="436" width="152" height="56" rx="6" fill="rgba(178,58,72,0.07)" stroke="#B23A48" stroke-width="1.3"/>
+<text x="380" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Crea el CVU</text>
+<text x="380" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">cuenta virtual uniforme</text>
+<rect x="360" y="428" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="368" y="438" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="560" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Abre la cuenta</text>
+<text x="560" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">donde vive el saldo</text>
+<rect x="540" y="300" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="548" y="310" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text>
+<rect x="728" y="180" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="180" width="152" height="56" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="740" y="204" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Activa la billetera</text>
+<text x="740" y="221" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">alta finalizada</text>
+<rect x="720" y="172" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="728" y="182" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text>
+<rect x="728" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="52" width="152" height="56" rx="6" fill="rgba(15,65,83,0.08)" stroke="#0F4153" stroke-width="1.8"/>
+<text x="740" y="76" fill="#0F4153" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve: billetera lista</text>
+<text x="740" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">aviso push</text>
+<rect x="728" y="564" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="564" width="152" height="56" rx="6" fill="rgba(138,109,59,0.09)" stroke="#8A6D3B" stroke-width="1.3"/>
+<text x="740" y="588" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Informa perfil fiscal</text>
+<text x="740" y="605" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">IVA · Ganancias · prov.</text>
+<rect x="720" y="556" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="728" y="566" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">5</text>
+<rect x="908" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="908" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="920" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Aplica comisiones</text>
+<text x="920" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">e impuestos según perfil</text>
+<rect x="1088" y="436" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="1088" y="436" width="152" height="56" rx="6" fill="rgba(178,58,72,0.07)" stroke="#B23A48" stroke-width="1.3"/>
+<text x="1100" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Asigna el alias</text>
+<text x="1100" y="477" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">nombre + CUIT</text>
+<rect x="1080" y="428" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="1088" y="438" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">6</text>
+<line x1="16" y1="680" x2="1248" y2="680" stroke="rgba(45,49,66,0.12)"/>
+<g font-family="'Geist Mono', monospace" font-size="9" letter-spacing="0.06em" fill="#4f5d75"><line x1="16" y1="704" x2="50" y2="704" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#alta-a)"/><text x="60" y="707">PASO SIGUIENTE</text><line x1="180" y1="704" x2="214" y2="704" stroke="#4f5d75" stroke-width="1.3" stroke-dasharray="5,4" marker-end="url(#alta-a)"/><text x="224" y="707">RESULTADO PROVISORIO</text><line x1="388" y1="704" x2="422" y2="704" stroke="#0F4153" stroke-width="1.8" marker-end="url(#alta-x)"/><text x="432" y="707">CAMINO EXITOSO</text><polygon points="568,696 578,704 568,712 558,704" fill="rgba(15,65,83,0.07)" stroke="#0F4153"/><text x="588" y="707">DECISIÓN</text></g>
+</svg></div></figure>
+  <div class="cols">
+    <div><h3>Resultados posibles</h3><div class="table-wrap"><table>
+      <thead><tr><th>El usuario ve</th><th>Cuándo pasa</th><th>Qué pasa con el dinero</th></tr></thead>
+      <tbody><tr><td><span class="dot" style="background:#0F4153"></span><b>Billetera lista</b></td><td>CVU y cuenta creados sin errores.</td><td>Saldo en cero, lista para recibir y enviar dinero.</td></tr><tr><td><span class="dot" style="background:#2D3142"></span><b>Alta no procede</b></td><td>El CUIL ya tiene una cuenta asociada a otro usuario.</td><td>No se crea la billetera.</td></tr><tr><td><span class="dot" style="border:1px dashed #2D3142"></span><b>Alta demorada</b></td><td>Falla temporal en la red bancaria o el procesador.</td><td>El paso fallido se reintenta y queda registrado.</td></tr></tbody></table></div></div>
+    <div class="rules"><h3>Reglas de negocio</h3><ol><li><b>Un CUIL, una billetera</b>: si el CUIL ya tiene cuenta en el procesador con otro usuario, el alta se rechaza.</li><li>El alias se arma con el nombre y el CUIT; si ya está en uso se le agrega un sufijo aleatorio.</li><li>El perfil fiscal de AFIP (IVA, Ganancias, provincia) define el modelo de comisiones e impuestos.</li><li>Al activarse la billetera se emite la tarjeta VISA SUBE automáticamente (caso 5).</li></ol></div>
+  </div>
+</section>
+<section class="flow" id="tarjeta">
+  <p class="eyebrow">Caso 5 · Alta de cuenta y tarjeta</p>
+  <h2>Tarjeta VISA SUBE</h2>
+  <p class="summary">Con la billetera activa, se emite automáticamente una tarjeta prepaga VISA SUBE asociada a la cuenta. Cuando el procesador confirma la emisión se activa y el usuario recibe el aviso.</p>
+  <dl class="meta">
+    <div><dt>Empieza cuando</dt><dd>La billetera queda activa (caso 4)</dd></div>
+    <div><dt>Termina en</dt><dd>Tarjeta activa, o emisión pendiente</dd></div>
+    <div class="wide"><dt>Participan</dt><dd class="chips"><span class="chip" style="--c:#2D3142"><i></i>Usuario<small>App Mi SUBE</small></span><span class="chip" style="--c:#0F4153"><i></i>Billetera Sube<small>NSSA</small></span><span class="chip" style="--c:#FFA945"><i></i>Procesador<small>Pismo · saldo</small></span></dd></div>
+  </dl>
+  <figure><div class="scroll"><svg viewBox="0 0 1084 472" style="min-width:867px" role="img" aria-labelledby="tarjeta-title tarjeta-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="tarjeta-title">Tarjeta VISA SUBE</title>
+<desc id="tarjeta-desc">Con la billetera activa, se emite automáticamente una tarjeta prepaga VISA SUBE asociada a la cuenta. Cuando el procesador confirma la emisi</desc>
+<defs><marker id="tarjeta-a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+<marker id="tarjeta-x" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0F4153"/></marker></defs>
+<rect x="0" y="0" width="1084" height="472" fill="#f5f5f5"/>
+<rect x="16" y="16" width="1052" height="128" fill="rgba(255,255,255,0.55)"/>
+<rect x="16" y="16" width="4" height="128" fill="#2D3142"/>
+<text x="32" y="74" fill="#2d3142" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">USUARIO</text>
+<text x="32" y="90" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">App Mi SUBE</text>
+<rect x="16" y="144" width="1052" height="128" fill="rgba(15,65,83,0.035)"/>
+<line x1="16" y1="144" x2="1068" y2="144" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="144" width="4" height="128" fill="#0F4153"/>
+<text x="32" y="202" fill="#0F4153" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">BILLETERA SUBE</text>
+<text x="32" y="218" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">NSSA</text>
+<rect x="16" y="272" width="1052" height="128" fill="rgba(255,169,69,0.06)"/>
+<line x1="16" y1="272" x2="1068" y2="272" stroke="rgba(45,49,66,0.12)"/>
+<rect x="16" y="272" width="4" height="128" fill="#FFA945"/>
+<text x="32" y="330" fill="#9a5a10" font-size="9" letter-spacing="0.16em" font-weight="500" font-family="'Geist Mono', monospace">PROCESADOR</text>
+<text x="32" y="346" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">Pismo · saldo</text>
+<rect x="16" y="16" width="1052" height="384" fill="none" stroke="rgba(45,49,66,0.18)"/>
+<line x1="168" y1="16" x2="168" y2="400" stroke="rgba(45,49,66,0.12)"/>
+<path d="M340,208 H436 Q444,208 444,216 V304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#tarjeta-a)"/>
+<path d="M474,308 V216 Q474,208 482,208 H576" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#tarjeta-a)"/>
+<path d="M668,208 L724,208" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#tarjeta-a)"/>
+<path d="M624,242 L624,304" fill="none" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#tarjeta-a)"/>
+<path d="M700,336 H976 Q984,336 984,328 V112" fill="none" stroke="#0F4153" stroke-width="1.8" marker-end="url(#tarjeta-x)"/>
+<rect x="684.6" y="187.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="696.0" y="197.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="middle" font-family="'Geist Mono', monospace">NO</text>
+<rect x="634.0" y="266.0" width="22.9" height="13" rx="2" fill="#f5f5f5"/>
+<text x="640.0" y="276.0" fill="#4f5d75" font-size="8" font-weight="500" letter-spacing="0.06em" text-anchor="start" font-family="'Geist Mono', monospace">SÍ</text>
+<rect x="188" y="180" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="188" y="180" width="152" height="56" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="200" y="204" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Pide la tarjeta</text>
+<text x="200" y="221" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">una por billetera</text>
+<rect x="180" y="172" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="188" y="182" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">1</text>
+<rect x="368" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="368" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="380" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Emite la tarjeta</text>
+<text x="380" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">VISA SUBE prepaga</text>
+<rect x="360" y="300" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="368" y="310" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">2</text>
+<polygon points="624,174 668,208 624,242 580,208" fill="#f5f5f5"/>
+<polygon points="624,174 668,208 624,242 580,208" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3"/>
+<text x="624" y="205" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">¿Se emitió</text>
+<text x="624" y="218" fill="#2d3142" font-size="10" font-weight="600" text-anchor="middle" font-family="Geist, sans-serif">bien?</text>
+<rect x="652" y="166" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="660" y="176" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">3</text>
+<rect x="728" y="180" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="728" y="180" width="152" height="56" rx="6" fill="rgba(15,65,83,0.07)" stroke="#0F4153" stroke-width="1.3" stroke-dasharray="5,4"/>
+<text x="740" y="204" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Queda pendiente</text>
+<text x="740" y="221" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">error o demora</text>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="548" y="308" width="152" height="56" rx="6" fill="rgba(255,169,69,0.14)" stroke="#FFA945" stroke-width="1.3"/>
+<text x="560" y="332" fill="#2d3142" font-size="12" font-weight="600" font-family="Geist, sans-serif">Activa la tarjeta</text>
+<text x="560" y="349" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">lista para usar</text>
+<rect x="540" y="300" width="16" height="14" rx="2" fill="#2d3142"/>
+<text x="548" y="310" fill="#fff" font-size="8" font-weight="600" text-anchor="middle" font-family="'Geist Mono', monospace">4</text>
+<rect x="908" y="52" width="152" height="56" rx="6" fill="#f5f5f5"/>
+<rect x="908" y="52" width="152" height="56" rx="6" fill="rgba(15,65,83,0.08)" stroke="#0F4153" stroke-width="1.8"/>
+<text x="920" y="76" fill="#0F4153" font-size="12" font-weight="600" font-family="Geist, sans-serif">Ve: tarjeta lista</text>
+<text x="920" y="93" fill="#7a8399" font-size="9" font-family="'Geist Mono', monospace">aviso push</text>
+<line x1="16" y1="424" x2="1068" y2="424" stroke="rgba(45,49,66,0.12)"/>
+<g font-family="'Geist Mono', monospace" font-size="9" letter-spacing="0.06em" fill="#4f5d75"><line x1="16" y1="448" x2="50" y2="448" stroke="#4f5d75" stroke-width="1.3" marker-end="url(#tarjeta-a)"/><text x="60" y="451">PASO SIGUIENTE</text><line x1="180" y1="448" x2="214" y2="448" stroke="#4f5d75" stroke-width="1.3" stroke-dasharray="5,4" marker-end="url(#tarjeta-a)"/><text x="224" y="451">RESULTADO PROVISORIO</text><line x1="388" y1="448" x2="422" y2="448" stroke="#0F4153" stroke-width="1.8" marker-end="url(#tarjeta-x)"/><text x="432" y="451">CAMINO EXITOSO</text><polygon points="568,440 578,448 568,456 558,448" fill="rgba(15,65,83,0.07)" stroke="#0F4153"/><text x="588" y="451">DECISIÓN</text></g>
+</svg></div></figure>
+  <div class="cols">
+    <div><h3>Resultados posibles</h3><div class="table-wrap"><table>
+      <thead><tr><th>El usuario ve</th><th>Cuándo pasa</th><th>Qué pasa con el dinero</th></tr></thead>
+      <tbody><tr><td><span class="dot" style="background:#0F4153"></span><b>Tarjeta lista</b></td><td>El procesador emite y activa la tarjeta.</td><td>Puede usarla para pagar. Recibe “Tu tarjeta prepaga está lista”.</td></tr><tr><td><span class="dot" style="border:1px dashed #2D3142"></span><b>Emisión pendiente</b></td><td>El procesador informa un error o demora en la emisión.</td><td>La billetera funciona igual; la tarjeta queda para revisión.</td></tr></tbody></table></div></div>
+    <div class="rules"><h3>Reglas de negocio</h3><ol><li>Se emite <b>una sola tarjeta</b> por billetera, sin que el usuario la pida.</li><li>Al activarse se avisa a las integraciones externas (por ejemplo, Modo).</li><li>La tarjeta física (plástico) se produce después en un proceso aparte.</li></ol></div>
+  </div>
+</section>
+<section class="flow" id="glosario">
+  <p class="eyebrow">Referencia</p>
+  <h2>Glosario</h2>
+  <dl class="gloss"><div><dt>CBU / CVU / alias</dt><dd>Identificadores de una cuenta: banco tradicional, billetera virtual o su nombre fácil de recordar.</dd></div><div><dt>Procesador (Pismo)</dt><dd>Plataforma que lleva el saldo de cada billetera y registra débitos y créditos.</dd></div><div><dt>Red bancaria (BNA / Coelsa)</dt><dd>Cámara que mueve el dinero entre entidades e informa si llegó.</dd></div><div><dt>Sistema QR (VQR)</dt><dd>Plataforma de transporte que genera los QR de viaje e informa cada viaje y la deuda.</dd></div><div><dt>Reserva</dt><dd>Bloqueo temporal de un monto: no se puede usar, pero todavía no salió de la cuenta.</dd></div><div><dt>Deuda de viajes</dt><dd>Diferencia entre la tarifa y el saldo cuando el saldo no alcanzó al viajar.</dd></div><div><dt>Perfil fiscal</dt><dd>Condición ante AFIP (IVA, Ganancias, provincia) que define comisiones e impuestos.</dd></div></dl>
+</section>
+<footer>Vista funcional relevada del código de los microservicios de la billetera · estilo diagram-design.</footer>
+</main>
+</div>
+<script>
+const links=[...document.querySelectorAll('nav.side a')];
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+  links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));}})},{rootMargin:'-30% 0px -60% 0px'});
+document.querySelectorAll('section.flow').forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
